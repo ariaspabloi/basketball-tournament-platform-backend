@@ -1,5 +1,12 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { Role } from './role.entity';
+import { Team } from 'src/teams/entities/team.entity';
 
 @Entity()
 export class User {
@@ -21,4 +28,7 @@ export class User {
 
   @Column('text')
   password: string;
+
+  @OneToMany(() => Team, (team) => team.club, { cascade: false })
+  teams?: Team;
 }

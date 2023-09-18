@@ -8,6 +8,7 @@ import { ClubsController, OrganizerController } from './users.controller';
 @Module({
   controllers: [ClubsController, OrganizerController],
   providers: [UsersService],
+  exports: [UsersService],
   imports: [TypeOrmModule.forFeature([User, Role])],
 })
 export class UsersModule {}
