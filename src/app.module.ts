@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
-import { ClubsModule } from './clubs/clubs.module';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
@@ -19,7 +19,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
         rejectUnauthorized: false,
       },
     }),
-    ClubsModule,
+    UsersModule,
   ],
   controllers: [],
   providers: [],
