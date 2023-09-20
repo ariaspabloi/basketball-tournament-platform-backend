@@ -9,6 +9,7 @@ import { DivisionsModule } from 'src/divisions/divisions.module';
 @Module({
   controllers: [TeamsController],
   providers: [TeamsService],
+  exports: [TeamsService],
   imports: [TypeOrmModule.forFeature([Team]), UsersModule, DivisionsModule],
 })
 export class TeamsModule {}

@@ -1,6 +1,9 @@
 {
   "name": "basketball-tournament-platform-backend",
   "version": "0.0.1",
+  "eslintIgnore": [
+    "./src/players/players.service.ts"
+  ],
   "description": "",
   "author": "",
   "private": true,
