@@ -1,5 +1,4 @@
 import {
-  BadRequestException,
   Injectable,
   InternalServerErrorException,
   Logger,
@@ -26,13 +25,9 @@ export class UsersService {
   ) {}
 
   private async create(userDetails, role) {
-    try {
-      const user = await this.userRepository.create({ ...userDetails, role });
-      await this.userRepository.save(user);
-      return user;
-    } catch (error) {
-      this.handleDBExceptions(error);
-    }
+    const user = await this.userRepository.create({ ...userDetails, role });
+    await this.userRepository.save(user);
+    return user;
   }
 
   private async findAllByRole(roleId: number) {
@@ -42,59 +37,36 @@ export class UsersService {
   private async findOne(id: number, roleId: number) {
     const user: User = await this.userRepository.findOneBy({ id });
     if (!user || user.role.id !== roleId)
-      throw new NotFoundException(`User with id ${id} not found`);
+      throw new NotFoundException(`User con ${id} no encontrado`);
     return user;
   }
 
   private async update(id: number, updateUserDto: UpdateUserDto) {
     const user = await this.userRepository.preload({ id, ...updateUserDto });
-    if (!user) throw new NotFoundException(`User with id ${id} not found`);
-    try {
-      await this.userRepository.save(user);
-    } catch (error) {
-      this.handleDBExceptions(error);
-    }
+    if (!user) throw new NotFoundException(`User con ${id} no encontrado`);
+    await this.userRepository.save(user);
     return user;
   }
 
   async createClub(createUserDto: CreateUserDto) {
-    try {
-      const role = await this.roleRepository.findOneBy({ id: this.CLUBROLEID });
-      //TODO: create a meaningful error msg
-      if (!role) {
-        throw new Error('Role not found');
-      }
-      return await this.create(createUserDto, role);
-    } catch (error) {
-      this.handleDBExceptions(error);
-    }
+    const role = await this.roleRepository.findOneBy({ id: this.CLUBROLEID });
+    if (!role) throw new InternalServerErrorException('Rol no encontrado');
+    return await this.create(createUserDto, role);
   }
 
   async findAllClubs() {
-    try {
-      const clubs = await this.findAllByRole(this.CLUBROLEID);
-      return clubs;
-    } catch (error) {
-      this.handleDBExceptions(error);
-    }
+    const clubs = await this.findAllByRole(this.CLUBROLEID);
+    return clubs;
   }
 
   async findClub(id: number) {
-    try {
-      const club = await this.findOne(id, this.CLUBROLEID);
-      return club;
-    } catch (error) {
-      this.handleDBExceptions(error);
-    }
+    const club = await this.findOne(id, this.CLUBROLEID);
+    return club;
   }
 
   async updateClub(id: number, updateUserDto: UpdateUserDto) {
-    try {
-      await this.findClub(id);
-      return await this.update(id, updateUserDto);
-    } catch (error) {
-      this.handleDBExceptions(error);
-    }
+    await this.findClub(id);
+    return await this.update(id, updateUserDto);
   }
   async removeClub(id: number) {
     const user = await this.findClub(id);
@@ -102,55 +74,29 @@ export class UsersService {
   }
 
   async createOrganizer(createUserDto: CreateUserDto) {
-    try {
-      const role = await this.roleRepository.findOneBy({
-        id: this.ORGANIZERROLERID,
-      });
-      //TODO: create a meaningful error msg
-      if (!role) {
-        throw new Error('Role not found');
-      }
-      return await this.create(createUserDto, role);
-    } catch (error) {
-      this.handleDBExceptions(error);
-    }
+    const role = await this.roleRepository.findOneBy({
+      id: this.ORGANIZERROLERID,
+    });
+    if (!role) throw new InternalServerErrorException('Rol no encontrado');
+    return await this.create(createUserDto, role);
   }
 
   async findAllOrganizers() {
-    try {
-      const clubs = await this.findAllByRole(this.ORGANIZERROLERID);
-      return clubs;
-    } catch (error) {
-      this.handleDBExceptions(error);
-    }
+    const clubs = await this.findAllByRole(this.ORGANIZERROLERID);
+    return clubs;
   }
 
   async findOrganizer(id: number) {
-    try {
-      const club = await this.findOne(id, this.ORGANIZERROLERID);
-      return club;
-    } catch (error) {
-      this.handleDBExceptions(error);
-    }
+    const club = await this.findOne(id, this.ORGANIZERROLERID);
+    return club;
   }
 
   async updateOrganizer(id: number, updateUserDto: UpdateUserDto) {
-    try {
-      await this.findOrganizer(id);
-      return await this.update(id, updateUserDto);
-    } catch (error) {
-      this.handleDBExceptions(error);
-    }
+    await this.findOrganizer(id);
+    return await this.update(id, updateUserDto);
   }
   async removeOrganizer(id: number) {
     const user = await this.findOrganizer(id);
     await this.userRepository.remove(user);
-  }
-
-  private handleDBExceptions(error: any) {
-    if (error.code === '23505') throw new BadRequestException(error.detail);
-
-    this.logger.error(error);
-    throw new InternalServerErrorException('Unexpected error');
   }
 }

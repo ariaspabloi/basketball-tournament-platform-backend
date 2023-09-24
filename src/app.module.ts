@@ -5,6 +5,10 @@ import { UsersModule } from './users/users.module';
 import { TeamsModule } from './teams/teams.module';
 import { DivisionsModule } from './divisions/divisions.module';
 import { PlayersModule } from './players/players.module';
+import { LeaguesModule } from './leagues/leagues.module';
+import { TeamLeagueStatisticsModule } from './team-league-statistics/team-league-statistics.module';
+import { MatchesModule } from './matches/matches.module';
+import { PlayerStatisticsModule } from './player-statistics/player-statistics.module';
 
 @Module({
   imports: [
@@ -26,6 +30,10 @@ import { PlayersModule } from './players/players.module';
     TeamsModule,
     DivisionsModule,
     PlayersModule,
+    LeaguesModule,
+    TeamLeagueStatisticsModule,
+    MatchesModule,
+    PlayerStatisticsModule,
   ],
   controllers: [],
   providers: [],
