@@ -1,7 +1,7 @@
 import { IsInt, Matches } from 'class-validator';
 
 export class CreateTeamDto {
-  @Matches(/^[\p{L}']+ [\p{L}']+ (?:[\p{L}']+ [\p{L}']+)?$/)
+  @Matches(/^[a-zA-Z]{3,}( {1,2}[a-zA-Z]{3,}){0,}$/)
   coach: string;
   @IsInt()
   clubId: number;

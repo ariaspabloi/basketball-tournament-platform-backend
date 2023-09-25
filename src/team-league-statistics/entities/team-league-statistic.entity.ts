@@ -35,7 +35,7 @@ export class TeamLeagueStatistic {
   @ManyToOne(() => Team, (team) => team.teamLeagueStatistics, {
     cascade: false,
   })
-  team: Team;
+  team?: Team;
 
   @ManyToOne(() => League, (league) => league.teamLeagueStatistics, {
     cascade: false,
