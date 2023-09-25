@@ -19,10 +19,13 @@ export class Team {
   @Column('text')
   coach: string;
 
-  @ManyToOne(() => User, (user) => user.teams, { cascade: false })
+  @ManyToOne(() => User, (user) => user.teams, { eager: true, cascade: false })
   club: User;
 
-  @ManyToOne(() => Division, (user) => user.teams, { cascade: false })
+  @ManyToOne(() => Division, (user) => user.teams, {
+    eager: true,
+    cascade: false,
+  })
   division: Division;
 
   @OneToMany(() => Player, (player) => player.team, { cascade: false })
