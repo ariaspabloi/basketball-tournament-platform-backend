@@ -22,7 +22,10 @@ export class Player {
   @Column('date')
   birthdate: string;
 
-  @ManyToOne(() => Team, (team) => team.players, { cascade: false })
+  @ManyToOne(() => Team, (team) => team.players, {
+    eager: true,
+    cascade: false,
+  })
   team: Team;
 
   @OneToMany(
