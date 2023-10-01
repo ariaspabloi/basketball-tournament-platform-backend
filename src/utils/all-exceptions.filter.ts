@@ -15,7 +15,15 @@ export class AllExceptionsFilter implements ExceptionFilter {
     const response = ctx.getResponse<Response>();
     const request = ctx.getRequest<Request>();
     let httpStatus;
-    let message = exception?.response?.message[0] || (exception as any).message;
+    let message;
+
+    if (Array.isArray(exception?.response?.message)) {
+      message = exception.response.message[0];
+    } else if (typeof exception?.response?.message === 'string') {
+      message = exception.response.message;
+    } else {
+      message = (exception as any).message;
+    }
 
     if (exception instanceof HttpException) {
       httpStatus = (exception as HttpException).getStatus();

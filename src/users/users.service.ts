@@ -48,6 +48,12 @@ export class UsersService {
     return user;
   }
 
+  async findOneByEmail(email: string) {
+    const user = await this.userRepository.findOneBy({ email });
+    if (!user) throw new NotFoundException(`User con ${email} no encontrado`);
+    return user;
+  }
+
   async createClub(createUserDto: CreateUserDto) {
     const role = await this.roleRepository.findOneBy({ id: this.CLUBROLEID });
     if (!role) throw new InternalServerErrorException('Rol no encontrado');

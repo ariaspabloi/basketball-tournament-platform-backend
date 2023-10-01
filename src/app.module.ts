@@ -9,10 +9,17 @@ import { LeaguesModule } from './leagues/leagues.module';
 import { TeamLeagueStatisticsModule } from './team-league-statistics/team-league-statistics.module';
 import { MatchesModule } from './matches/matches.module';
 import { PlayerStatisticsModule } from './player-statistics/player-statistics.module';
+import { AuthModule } from './auth/auth.module';
+import { config } from './config/config';
+import { APP_GUARD } from '@nestjs/core';
+import { RolesAuthGuard } from './auth/roles-auth.guard';
 
 @Module({
   imports: [
-    ConfigModule.forRoot(),
+    ConfigModule.forRoot({
+      isGlobal: true,
+      load: [config],
+    }),
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: process.env.DB_HOST,
@@ -34,9 +41,15 @@ import { PlayerStatisticsModule } from './player-statistics/player-statistics.mo
     TeamLeagueStatisticsModule,
     MatchesModule,
     PlayerStatisticsModule,
+    AuthModule,
   ],
   controllers: [],
-  providers: [],
+  providers: [
+    {
+      provide: APP_GUARD,
+      useClass: RolesAuthGuard,
+    },
+  ],
   exports: [],
 })
 export class AppModule {}
