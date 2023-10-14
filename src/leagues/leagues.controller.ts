@@ -1,4 +1,12 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import { LeaguesService } from './leagues.service';
 import { CreateLeagueDto } from './dto/create-league.dto';
 import { UpdateLeagueDto } from './dto/update-league.dto';

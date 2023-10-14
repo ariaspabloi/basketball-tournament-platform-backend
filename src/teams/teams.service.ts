@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { CreateTeamDto } from './dto/create-team.dto';
 import { UpdateTeamDto } from './dto/update-team.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -16,9 +20,15 @@ export class TeamsService {
     private readonly divisionService: DivisionsService,
   ) {}
 
-  async create(createTeamDto: CreateTeamDto) {
+  async create(isAdmin: boolean, userId: number, createTeamDto: CreateTeamDto) {
+    console.log(isAdmin, userId, createTeamDto.clubId);
+    if (!isAdmin && createTeamDto.clubId) {
+      throw new UnauthorizedException(
+        'No tienes permiso para crear un post en nombre de otro usuario.',
+      );
+    }
     const { clubId, divisionId, ...teamDetails } = createTeamDto;
-    const club = await this.userService.findClub(clubId);
+    const club = await this.userService.findClub(clubId || userId);
     const division = await this.divisionService.findOne(divisionId);
     const team = await this.teamRepository.create({
       ...teamDetails,

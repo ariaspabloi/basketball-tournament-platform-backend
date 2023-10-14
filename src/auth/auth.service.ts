@@ -20,6 +20,7 @@ export class AuthService {
       email: user.email,
       name: user.name,
       role: user.role.role_name,
+      isAdmin: user.role.role_name === 'Administrador',
     };
     return {
       access_token: await this.jwtService.signAsync(payload),
