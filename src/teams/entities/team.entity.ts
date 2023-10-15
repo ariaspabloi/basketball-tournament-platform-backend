@@ -28,7 +28,10 @@ export class Team {
   })
   division: Division;
 
-  @OneToMany(() => Player, (player) => player.team, { cascade: false })
+  @OneToMany(() => Player, (player) => player.team, {
+    eager: true,
+    cascade: false,
+  })
   players?: Player;
 
   @OneToMany(

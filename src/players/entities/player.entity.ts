@@ -23,7 +23,6 @@ export class Player {
   birthdate: string;
 
   @ManyToOne(() => Team, (team) => team.players, {
-    eager: true,
     cascade: false,
   })
   team: Team;

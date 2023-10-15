@@ -1,8 +1,4 @@
-import {
-  Injectable,
-  NotFoundException,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateTeamDto } from './dto/create-team.dto';
 import { UpdateTeamDto } from './dto/update-team.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -20,13 +16,7 @@ export class TeamsService {
     private readonly divisionService: DivisionsService,
   ) {}
 
-  async create(isAdmin: boolean, userId: number, createTeamDto: CreateTeamDto) {
-    console.log(isAdmin, userId, createTeamDto.clubId);
-    if (!isAdmin && createTeamDto.clubId) {
-      throw new UnauthorizedException(
-        'No tienes permiso para crear un post en nombre de otro usuario.',
-      );
-    }
+  async create(userId: number, createTeamDto: CreateTeamDto) {
     const { clubId, divisionId, ...teamDetails } = createTeamDto;
     const club = await this.userService.findClub(clubId || userId);
     const division = await this.divisionService.findOne(divisionId);
@@ -48,6 +38,15 @@ export class TeamsService {
     const team = await this.teamRepository.findOneBy({ id });
     if (!team) throw new NotFoundException(`Equipo con ${id} no encontrado.`);
     return team;
+  }
+
+  async findOwned(clubId: number) {
+    const club = await this.userService.findClub(clubId);
+    const teams = await this.teamRepository.find({
+      where: { club },
+      select: ['id', 'coach', 'division'],
+    });
+    return teams;
   }
 
   async update(id: number, updateTeamDto: UpdateTeamDto) {

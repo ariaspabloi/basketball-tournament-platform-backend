@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   Req,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { TeamsService } from './teams.service';
 import { CreateTeamDto } from './dto/create-team.dto';
@@ -21,11 +22,12 @@ export class TeamsController {
   @Roles(Role.Administrator, Role.Club)
   @Post()
   create(@Body() createTeamDto: CreateTeamDto, @Req() req: any) {
-    return this.teamsService.create(
-      req.user.isAdmin,
-      req.user.sub,
-      createTeamDto,
-    );
+    const { isAdmin, sub } = req.user;
+    if (!isAdmin && createTeamDto.clubId)
+      throw new UnauthorizedException(
+        'No tienes permiso para crear un equipo en nombre de otro usuario.',
+      );
+    return this.teamsService.create(sub, createTeamDto);
   }
 
   @Get()
@@ -33,16 +35,24 @@ export class TeamsController {
     return this.teamsService.findAll();
   }
 
+  @Get('owned')
+  @Roles(Role.Club)
+  findOwned(@Req() req: any) {
+    return this.teamsService.findOwned(req.user.sub);
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.teamsService.findOne(+id);
   }
 
+  @Roles(Role.Administrator, Role.Club)
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateTeamDto: UpdateTeamDto) {
     return this.teamsService.update(+id, updateTeamDto);
   }
 
+  @Roles(Role.Administrator, Role.Club)
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.teamsService.remove(+id);
