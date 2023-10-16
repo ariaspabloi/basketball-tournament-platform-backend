@@ -41,6 +41,12 @@ export class TeamsController {
     return this.teamsService.findOwned(req.user.sub);
   }
 
+  @Get('count')
+  @Roles(Role.Club)
+  teamCount(@Req() req: any) {
+    return this.teamsService.teamCount(req.user.sub);
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.teamsService.findOne(+id);

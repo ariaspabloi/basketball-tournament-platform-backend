@@ -32,7 +32,7 @@ export class Team {
     eager: true,
     cascade: false,
   })
-  players?: Player;
+  players?: Player[];
 
   @OneToMany(
     () => TeamLeagueStatistic,
@@ -42,8 +42,8 @@ export class Team {
   teamLeagueStatistics?: TeamLeagueStatistic;
 
   @OneToMany(() => Match, (match) => match.away, { cascade: false })
-  awayMatches?: Match;
+  awayMatches?: Match[];
 
   @OneToMany(() => Match, (match) => match.home, { cascade: false })
-  homeMatches?: Match;
+  homeMatches?: Match[];
 }

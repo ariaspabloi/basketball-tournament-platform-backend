@@ -8,6 +8,7 @@ import { TeamsModule } from 'src/teams/teams.module';
 @Module({
   controllers: [PlayersController],
   providers: [PlayersService],
+  exports: [PlayersService],
   imports: [TypeOrmModule.forFeature([Player]), TeamsModule],
 })
 export class PlayersModule {}

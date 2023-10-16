@@ -49,6 +49,18 @@ export class TeamsService {
     return teams;
   }
 
+  async teamCount(clubId: number) {
+    const club = await this.userService.findClub(clubId);
+    const teams = await this.teamRepository.find({
+      where: { club },
+    });
+    const totalPlayers = teams.reduce(
+      (total, team) => team.players.length + total,
+      0,
+    );
+    return { totalTeams: teams.length, totalPlayers };
+  }
+
   async update(id: number, updateTeamDto: UpdateTeamDto) {
     let team: Team;
     if (updateTeamDto.divisionId) {
