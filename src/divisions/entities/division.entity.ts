@@ -10,5 +10,5 @@ export class Division {
   category: string;
 
   @OneToMany(() => Team, (team) => team.division, { cascade: true })
-  teams?: Team;
+  teams?: Team[];
 }

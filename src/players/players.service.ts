@@ -26,7 +26,9 @@ export class PlayersService {
   }
 
   async findAll() {
-    const players = await this.playerRepository.find();
+    const players = await this.playerRepository.find({
+      relations: { team: true },
+    });
     return players;
   }
 

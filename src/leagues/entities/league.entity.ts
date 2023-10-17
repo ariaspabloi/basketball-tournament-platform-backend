@@ -37,8 +37,8 @@ export class League {
     (teamLeagueStatistic) => teamLeagueStatistic.league,
     { cascade: false },
   )
-  teamLeagueStatistics?: TeamLeagueStatistic;
+  teamLeagueStatistics?: TeamLeagueStatistic[];
 
   @OneToMany(() => Match, (match) => match.league, { cascade: false })
-  matches?: Match;
+  matches?: Match[];
 }

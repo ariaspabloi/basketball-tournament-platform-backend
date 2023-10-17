@@ -32,14 +32,14 @@ export class User {
   password: string;
 
   @OneToMany(() => Team, (team) => team.club, { cascade: false })
-  teams?: Team;
+  teams?: Team[];
 
   @OneToMany(() => League, (league) => league.organizer, { cascade: false })
-  leagues?: League;
+  leagues?: League[];
 
   @OneToMany(() => League, (league) => league.winner, { cascade: false })
-  wins?: League;
+  wins?: League[];
 
   @OneToMany(() => Match, (match) => match.organizer, { cascade: false })
-  matches?: Match;
+  matches?: Match[];
 }

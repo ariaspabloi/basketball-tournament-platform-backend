@@ -12,5 +12,5 @@ export class Role {
   role_name: string;
 
   @OneToMany(() => User, (user) => user.role, { cascade: false })
-  users?: User;
+  users?: User[];
 }

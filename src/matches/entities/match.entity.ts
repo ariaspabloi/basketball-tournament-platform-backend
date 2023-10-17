@@ -47,5 +47,5 @@ export class Match {
     (playerStatictics) => playerStatictics.match,
     { cascade: false },
   )
-  playersStatistics?: PlayerStatistic;
+  playersStatistics?: PlayerStatistic[];
 }

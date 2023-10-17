@@ -32,5 +32,5 @@ export class Player {
     (playerStatictics) => playerStatictics.player,
     { cascade: false },
   )
-  playersStatistics?: PlayerStatistic;
+  playersStatistics?: PlayerStatistic[];
 }
