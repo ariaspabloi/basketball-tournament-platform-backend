@@ -30,6 +30,7 @@ export class TeamLeagueStatisticsService {
     const statistics = await this.teamLeagueRepository
       .createQueryBuilder('team-league-statistics')
       .leftJoinAndSelect('team-league-statistics.league', 'league')
+      .leftJoinAndSelect('team-league-statistics.team', 'team')
       .where('team-league-statistics.teamId IN (:...teams)', { teams: teams })
       .getMany();
     return statistics;

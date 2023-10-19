@@ -48,6 +48,19 @@ export class MatchesService {
     return match;
   }
 
+  async findAllByTeam(teamId: number) {
+    const team = await this.teamService.findOne(teamId);
+    const matches = await this.matchRepository.find({
+      where: [
+        { home: team },
+        { away: team }, // This is the OR condition
+      ],
+      relations: { away: true, home: true },
+    });
+    console.log(matches);
+    return matches;
+  }
+
   async update(id: number, updateMatchDto: UpdateMatchDto) {
     //TODO: update team-league-stadistics if not friendly
     const match = await this.matchRepository.preload({

@@ -25,6 +25,11 @@ export class MatchesController {
     return this.matchesService.findAll();
   }
 
+  @Get('team/:id')
+  findAllByTeam(@Param('id') id: string) {
+    return this.matchesService.findAllByTeam(+id);
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.matchesService.findOne(+id);
