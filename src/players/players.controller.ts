@@ -10,6 +10,8 @@ import {
 import { PlayersService } from './players.service';
 import { CreatePlayerDto } from './dto/create-player.dto';
 import { UpdatePlayerDto } from './dto/update-player.dto';
+import { Roles } from 'src/auth/roles/roles.decorator';
+import { Role } from 'src/auth/roles/role.enum';
 
 @Controller('players')
 export class PlayersController {
@@ -23,6 +25,12 @@ export class PlayersController {
   @Get()
   findAll() {
     return this.playersService.findAll();
+  }
+
+  @Get('count')
+  @Roles(Role.Administrator)
+  Count() {
+    return this.playersService.getCount();
   }
 
   @Get(':id')

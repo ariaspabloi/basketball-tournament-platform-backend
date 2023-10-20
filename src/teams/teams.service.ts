@@ -34,6 +34,13 @@ export class TeamsService {
     return teams;
   }
 
+  async getCount() {
+    const count = await this.teamRepository
+      .createQueryBuilder('team')
+      .getCount();
+    return count;
+  }
+
   async findOne(id: number) {
     const team = await this.teamRepository.findOneBy({ id });
     if (!team) throw new NotFoundException(`Equipo con ${id} no encontrado.`);

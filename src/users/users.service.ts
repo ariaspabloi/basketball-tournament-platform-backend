@@ -48,6 +48,22 @@ export class UsersService {
     return user;
   }
 
+  private async getCount(role) {
+    const count = await this.userRepository
+      .createQueryBuilder('user')
+      .where('user.roleId = :roleId', { roleId: role })
+      .getCount();
+    return count;
+  }
+
+  async getClubCount() {
+    return await this.getCount(this.CLUBROLEID);
+  }
+
+  async getOrganizerCount() {
+    return await this.getCount(this.ORGANIZERROLERID);
+  }
+
   async findOneByEmail(email: string) {
     const user = await this.userRepository.findOneBy({ email });
     if (!user) throw new NotFoundException(`User con ${email} no encontrado`);

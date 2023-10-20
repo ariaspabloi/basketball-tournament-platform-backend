@@ -42,6 +42,12 @@ export class TeamsController {
   }
 
   @Get('count')
+  @Roles(Role.Administrator)
+  Count() {
+    return this.teamsService.getCount();
+  }
+
+  @Get('club/count')
   @Roles(Role.Club)
   teamCount(@Req() req: any) {
     return this.teamsService.teamCount(req.user.sub);

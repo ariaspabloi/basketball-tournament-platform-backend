@@ -10,6 +10,8 @@ import {
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { Roles } from 'src/auth/roles/roles.decorator';
+import { Role } from 'src/auth/roles/role.enum';
 
 @Controller('clubs')
 export class ClubsController {
@@ -23,6 +25,12 @@ export class ClubsController {
   @Get()
   findAll() {
     return this.usersService.findAllClubs();
+  }
+
+  @Get('count')
+  @Roles(Role.Administrator)
+  Count() {
+    return this.usersService.getClubCount();
   }
 
   @Get(':id')
@@ -53,6 +61,12 @@ export class OrganizerController {
   @Get()
   findAll() {
     return this.usersService.findAllOrganizers();
+  }
+
+  @Get('count')
+  @Roles(Role.Administrator)
+  Count() {
+    return this.usersService.getOrganizerCount();
   }
 
   @Get(':id')

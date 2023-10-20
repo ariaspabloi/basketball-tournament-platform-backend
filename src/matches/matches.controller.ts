@@ -10,6 +10,8 @@ import {
 import { MatchesService } from './matches.service';
 import { CreateMatchDto } from './dto/create-match.dto';
 import { UpdateMatchDto } from './dto/update-match.dto';
+import { Roles } from 'src/auth/roles/roles.decorator';
+import { Role } from 'src/auth/roles/role.enum';
 
 @Controller('matches')
 export class MatchesController {
@@ -28,6 +30,12 @@ export class MatchesController {
   @Get('team/:id')
   findAllByTeam(@Param('id') id: string) {
     return this.matchesService.findAllByTeam(+id);
+  }
+
+  @Get('count')
+  @Roles(Role.Administrator)
+  Count() {
+    return this.matchesService.getCount();
   }
 
   @Get(':id')

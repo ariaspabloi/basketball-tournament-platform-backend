@@ -25,6 +25,13 @@ export class PlayersService {
     return player;
   }
 
+  async getCount() {
+    const count = await this.playerRepository
+      .createQueryBuilder('player')
+      .getCount();
+    return count;
+  }
+
   async findAll() {
     const players = await this.playerRepository.find({
       relations: { team: true },

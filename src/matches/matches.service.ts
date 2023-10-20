@@ -48,6 +48,13 @@ export class MatchesService {
     return match;
   }
 
+  async getCount() {
+    const count = await this.matchRepository
+      .createQueryBuilder('match')
+      .getCount();
+    return count;
+  }
+
   async findAllByTeam(teamId: number) {
     const team = await this.teamService.findOne(teamId);
     const matches = await this.matchRepository.find({
