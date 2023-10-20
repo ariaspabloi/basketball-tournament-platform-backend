@@ -27,15 +27,15 @@ export class MatchesController {
     return this.matchesService.findAll();
   }
 
-  @Get('team/:id')
-  findAllByTeam(@Param('id') id: string) {
-    return this.matchesService.findAllByTeam(+id);
-  }
-
   @Get('count')
   @Roles(Role.Administrator)
   Count() {
     return this.matchesService.getCount();
+  }
+
+  @Get('team/:id')
+  findAllByTeam(@Param('id') id: string) {
+    return this.matchesService.findAllByTeam(+id);
   }
 
   @Get(':id')

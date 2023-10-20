@@ -10,6 +10,8 @@ import {
 import { LeaguesService } from './leagues.service';
 import { CreateLeagueDto } from './dto/create-league.dto';
 import { UpdateLeagueDto } from './dto/update-league.dto';
+import { Roles } from 'src/auth/roles/roles.decorator';
+import { Role } from 'src/auth/roles/role.enum';
 
 @Controller('leagues')
 export class LeaguesController {
@@ -23,6 +25,12 @@ export class LeaguesController {
   @Get()
   findAll() {
     return this.leaguesService.findAll();
+  }
+
+  @Get('count')
+  @Roles(Role.Administrator)
+  Count() {
+    return this.leaguesService.getCount();
   }
 
   @Get(':id')

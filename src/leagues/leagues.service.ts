@@ -36,6 +36,13 @@ export class LeaguesService {
     return league;
   }
 
+  async getCount() {
+    const count = await this.leagueRepository
+      .createQueryBuilder('league')
+      .getCount();
+    return count;
+  }
+
   async update(id: number, updateLeagueDto: UpdateLeagueDto) {
     //TODO: borrar matches si se cambia las fechas
     const league = await this.leagueRepository.preload({
