@@ -60,7 +60,7 @@ export class LeaguesService {
         'awayClub.name',
         'homeClub.name',
       ])
-      .getMany();
+      .getOne();
 
     /*
     const playerStatistics = await this.playerStatisticsRepository
