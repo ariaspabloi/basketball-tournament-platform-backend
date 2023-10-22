@@ -51,6 +51,11 @@ export class LeaguesController {
     return this.leaguesService.findLeagueMatches(+id);
   }
 
+  @Get(':id/clubs')
+  findLeagueClue(@Param('id') id: string) {
+    return this.leaguesService.findLeagueClubs(+id);
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.leaguesService.findOne(+id);

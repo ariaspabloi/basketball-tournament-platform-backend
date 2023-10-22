@@ -1,7 +1,6 @@
 import { League } from 'src/leagues/entities/league.entity';
 import { PlayerStatistic } from 'src/player-statistics/entities/player-statistic.entity';
 import { Team } from 'src/teams/entities/team.entity';
-import { User } from 'src/users/entities/user.entity';
 import {
   Column,
   Entity,
@@ -21,9 +20,6 @@ export class Match {
   @Column('text')
   place: string;
 
-  @Column('boolean', { default: false })
-  friendlyMatch: boolean;
-
   @Column('int', { default: 0 })
   homePoints: number;
 
@@ -38,9 +34,6 @@ export class Match {
 
   @ManyToOne(() => League, (league) => league.matches, { cascade: false })
   league?: League;
-
-  @ManyToOne(() => User, (organizer) => organizer.matches, { cascade: false })
-  organizer: User;
 
   @OneToMany(
     () => PlayerStatistic,

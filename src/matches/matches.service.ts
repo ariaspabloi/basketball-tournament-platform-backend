@@ -1,15 +1,11 @@
-import {
-  BadRequestException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateMatchDto } from './dto/create-match.dto';
 import { UpdateMatchDto } from './dto/update-match.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Match } from './entities/match.entity';
 import { Repository } from 'typeorm';
 import { TeamsService } from 'src/teams/teams.service';
-import { UsersService } from 'src/users/users.service';
+import { LeaguesService } from 'src/leagues/leagues.service';
 
 @Injectable()
 export class MatchesService {
@@ -17,19 +13,19 @@ export class MatchesService {
     @InjectRepository(Match)
     private readonly matchRepository: Repository<Match>,
     private readonly teamService: TeamsService,
-    private readonly organizerService: UsersService,
+    private readonly leagueService: LeaguesService,
   ) {}
 
   async create(createMatchDto: CreateMatchDto) {
-    const { homeId, awayId, organizerId, ...matchDetails } = createMatchDto;
+    //TODO: check home away exists on the league
+    const { homeId, awayId, leagueId, ...matchDetails } = createMatchDto;
+    const league = await this.leagueService.findOne(leagueId);
     const home = await this.teamService.findOne(homeId);
     const away = await this.teamService.findOne(awayId);
-    const organizer = await this.organizerService.findOrganizer(organizerId);
     const match = await this.matchRepository.create({
-      friendlyMatch: true,
       home,
       away,
-      organizer,
+      league,
       ...matchDetails,
     });
     await this.matchRepository.save(match);
@@ -82,10 +78,6 @@ export class MatchesService {
 
   async remove(id: number) {
     const match = await this.findOne(id);
-    if (!match.friendlyMatch)
-      throw new BadRequestException(
-        'No se puede borrar, el partido no es amistoso.',
-      );
     await this.matchRepository.remove(match);
   }
 }

@@ -8,7 +8,7 @@ export class CreateMatchDto {
   place: string;
 
   @IsInt()
-  organizerId: number;
+  leagueId: number;
 
   @IsInt()
   homeId: number;

@@ -61,18 +61,25 @@ export class LeaguesService {
         'homeClub.name',
       ])
       .getOne();
-
-    /*
-    const playerStatistics = await this.playerStatisticsRepository
-      .createQueryBuilder('playerStatistics')
-      .where('playerStatistics.player = :playerId', { playerId })
-      .leftJoinAndSelect('playerStatistics.match', 'match')
-      .leftJoinAndSelect('match.home', 'home')
-      .leftJoinAndSelect('home.club', 'homeClub')
-      .leftJoinAndSelect('match.away', 'away')
-      .leftJoinAndSelect('away.club', 'awayClub')
-      .getMany(); */
     return leagueMatches;
+  }
+
+  async findLeagueClubs(id) {
+    const leagueClubs = await this.leagueRepository
+      .createQueryBuilder('league')
+      .where('league.id = :id', { id })
+      .innerJoinAndSelect('league.teamLeagueStatistics', 'teamLeagueStatistics')
+      .innerJoinAndSelect('teamLeagueStatistics.team', 'team')
+      .innerJoinAndSelect('team.club', 'club')
+      .select([
+        'league.id',
+        'teamLeagueStatistics.id',
+        'team.id',
+        'club.id',
+        'club.name',
+      ])
+      .getOne();
+    return leagueClubs.teamLeagueStatistics.map((item) => item.team.club);
   }
 
   async findOne(id: number) {
