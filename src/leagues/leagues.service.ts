@@ -25,6 +25,19 @@ export class LeaguesService {
     return league;
   }
 
+  async createByOrganizer(
+    organizerId: number,
+    createLeagueDto: CreateLeagueDto,
+  ) {
+    const organizer = await this.userSevice.findOrganizer(organizerId);
+    const league = await this.leagueRepository.create({
+      ...createLeagueDto,
+      organizer,
+    });
+    await this.leagueRepository.save(league);
+    return league;
+  }
+
   async findAll() {
     const leagues = await this.leagueRepository.find();
     return leagues;

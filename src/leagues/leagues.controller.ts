@@ -40,6 +40,12 @@ export class LeaguesController {
     return this.leaguesService.findByOrganizer(req.user.sub);
   }
 
+  @Post('organizer')
+  @Roles(Role.Organizer)
+  createByOrganizer(@Req() req: any, @Body() createLeagueDto: CreateLeagueDto) {
+    return this.leaguesService.createByOrganizer(req.user.sub, createLeagueDto);
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.leaguesService.findOne(+id);

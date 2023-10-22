@@ -15,6 +15,7 @@ export class CreateLeagueDto {
   @IsOnlyDate()
   endDate: string;
 
+  @IsOptional()
   @IsInt()
   organizerId: number;
 }
