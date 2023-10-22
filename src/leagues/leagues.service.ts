@@ -71,15 +71,9 @@ export class LeaguesService {
       .innerJoinAndSelect('league.teamLeagueStatistics', 'teamLeagueStatistics')
       .innerJoinAndSelect('teamLeagueStatistics.team', 'team')
       .innerJoinAndSelect('team.club', 'club')
-      .select([
-        'league.id',
-        'teamLeagueStatistics.id',
-        'team.id',
-        'club.id',
-        'club.name',
-      ])
+      .select(['league.id', 'teamLeagueStatistics.id', 'team.id', 'club.name'])
       .getOne();
-    return leagueClubs.teamLeagueStatistics.map((item) => item.team.club);
+    return leagueClubs.teamLeagueStatistics.map((item) => item.team);
   }
 
   async findOne(id: number) {
