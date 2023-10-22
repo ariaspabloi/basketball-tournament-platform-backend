@@ -43,6 +43,38 @@ export class LeaguesService {
     return leagues;
   }
 
+  async findLeagueMatches(id) {
+    const leagueMatches = await this.leagueRepository
+      .createQueryBuilder('league')
+      .where('league.id = :id', { id })
+      .innerJoinAndSelect('league.matches', 'match')
+      .innerJoinAndSelect('match.home', 'homeTeam')
+      .innerJoinAndSelect('match.away', 'awayTeam')
+      .innerJoinAndSelect('awayTeam.club', 'awayClub')
+      .innerJoinAndSelect('homeTeam.club', 'homeClub')
+      .select([
+        'league.id',
+        'match',
+        'homeTeam',
+        'awayTeam',
+        'awayClub.name',
+        'homeClub.name',
+      ])
+      .getMany();
+
+    /*
+    const playerStatistics = await this.playerStatisticsRepository
+      .createQueryBuilder('playerStatistics')
+      .where('playerStatistics.player = :playerId', { playerId })
+      .leftJoinAndSelect('playerStatistics.match', 'match')
+      .leftJoinAndSelect('match.home', 'home')
+      .leftJoinAndSelect('home.club', 'homeClub')
+      .leftJoinAndSelect('match.away', 'away')
+      .leftJoinAndSelect('away.club', 'awayClub')
+      .getMany(); */
+    return leagueMatches;
+  }
+
   async findOne(id: number) {
     const league = await this.leagueRepository.findOneBy({ id });
     if (!league) throw new NotFoundException(`Liga con ${id} no encontrada.`);

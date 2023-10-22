@@ -46,6 +46,11 @@ export class LeaguesController {
     return this.leaguesService.createByOrganizer(req.user.sub, createLeagueDto);
   }
 
+  @Get(':id/matches')
+  findLeagueMatches(@Param('id') id: string) {
+    return this.leaguesService.findLeagueMatches(+id);
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.leaguesService.findOne(+id);
