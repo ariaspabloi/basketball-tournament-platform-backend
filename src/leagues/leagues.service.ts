@@ -36,6 +36,12 @@ export class LeaguesService {
     return league;
   }
 
+  async findByOrganizer(organizerId: number) {
+    const organizer = await this.userSevice.findOrganizer(organizerId);
+    const leagues = await this.leagueRepository.find({ where: { organizer } });
+    return leagues;
+  }
+
   async getCount() {
     const count = await this.leagueRepository
       .createQueryBuilder('league')

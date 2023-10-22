@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  Req,
 } from '@nestjs/common';
 import { LeaguesService } from './leagues.service';
 import { CreateLeagueDto } from './dto/create-league.dto';
@@ -31,6 +32,12 @@ export class LeaguesController {
   @Roles(Role.Administrator)
   Count() {
     return this.leaguesService.getCount();
+  }
+
+  @Get('organizer')
+  @Roles(Role.Organizer)
+  findByOrganizer(@Req() req: any) {
+    return this.leaguesService.findByOrganizer(req.user.sub);
   }
 
   @Get(':id')
