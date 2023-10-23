@@ -15,9 +15,14 @@ export class TeamLeagueStatisticsService {
   ) {}
 
   async findLeagueStatistics(leagueId: number) {
-    const leagueStatistics = await this.teamLeagueRepository.find({
-      where: { league: { id: leagueId } },
-    });
+    const leagueStatistics = await this.teamLeagueRepository
+      .createQueryBuilder('team-league-statistics')
+      .innerJoin('team-league-statistics.league', 'league')
+      .innerJoinAndSelect('team-league-statistics.team', 'team')
+      .innerJoinAndSelect('team.club', 'user')
+      .where('league.id = :id', { id: leagueId })
+      .select(['team-league-statistics', 'team.id', 'team.club', 'user.name'])
+      .getMany();
     if (!leagueStatistics)
       throw new NotFoundException('Estadistica no encontrada.');
     return leagueStatistics;

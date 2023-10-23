@@ -72,7 +72,6 @@ export class MatchesService {
     });
     if (!match)
       throw new NotFoundException(`Equipo con id ${id} no encontrado.`);
-    await this.matchRepository.save(match);
     return match;
   }
 
