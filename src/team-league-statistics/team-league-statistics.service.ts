@@ -23,6 +23,7 @@ export class TeamLeagueStatisticsService {
       league,
       team,
     });
+    await this.teamLeagueRepository.save(teamLeagueStatistic);
     return teamLeagueStatistic;
   }
 
