@@ -4,6 +4,7 @@ import { TeamLeagueStatistic } from './entities/team-league-statistic.entity';
 import { Repository } from 'typeorm';
 import { TeamsService } from 'src/teams/teams.service';
 import { LeaguesService } from 'src/leagues/leagues.service';
+import { CreateTeamLeagueStatisticDto } from './dto/create-team-league-statistic.dto';
 
 @Injectable()
 export class TeamLeagueStatisticsService {
@@ -13,6 +14,17 @@ export class TeamLeagueStatisticsService {
     private readonly teamService: TeamsService,
     private readonly leagueService: LeaguesService,
   ) {}
+
+  async create(createTeamLeagueStatisticDto: CreateTeamLeagueStatisticDto) {
+    const { teamId, leagueId } = createTeamLeagueStatisticDto;
+    const league = await this.leagueService.findOne(leagueId);
+    const team = await this.teamService.findOne(teamId);
+    const teamLeagueStatistic = await this.teamLeagueRepository.create({
+      league,
+      team,
+    });
+    return teamLeagueStatistic;
+  }
 
   async findLeagueStatistics(leagueId: number) {
     const leagueStatistics = await this.teamLeagueRepository
