@@ -90,7 +90,10 @@ export class LeaguesService {
 
   async findByOrganizer(organizerId: number) {
     const organizer = await this.userSevice.findOrganizer(organizerId);
-    const leagues = await this.leagueRepository.find({ where: { organizer } });
+    const leagues = await this.leagueRepository.find({
+      where: { organizer },
+      relations: ['winner'],
+    });
     return leagues;
   }
 
