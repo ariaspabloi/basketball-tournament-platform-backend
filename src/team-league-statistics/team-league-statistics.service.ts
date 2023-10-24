@@ -51,7 +51,13 @@ export class TeamLeagueStatisticsService {
       .leftJoinAndSelect('team-league-statistics.team', 'team')
       .leftJoinAndSelect('league.winner', 'user')
       .where('team-league-statistics.teamId IN (:...teams)', { teams: teams })
-      .select(['team-league-statistics', 'league', 'user.id', 'user.name'])
+      .select([
+        'team-league-statistics',
+        'team',
+        'league',
+        'user.id',
+        'user.name',
+      ])
       .getMany();
     return statistics;
   }
