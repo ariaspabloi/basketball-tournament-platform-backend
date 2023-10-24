@@ -40,6 +40,12 @@ export class LeaguesController {
     return this.leaguesService.findByOrganizer(req.user.sub);
   }
 
+  @Get('organizer/count')
+  @Roles(Role.Organizer)
+  countLeagueClubs(@Req() req: any) {
+    return this.leaguesService.countLeagueClubs(req.user.sub);
+  }
+
   @Post('organizer')
   @Roles(Role.Organizer)
   createByOrganizer(@Req() req: any, @Body() createLeagueDto: CreateLeagueDto) {

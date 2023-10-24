@@ -82,6 +82,19 @@ export class LeaguesService {
     return leagueClubs.teamLeagueStatistics.map((item) => item.team);
   }
 
+  async countLeagueClubs(id) {
+    const leagueCount = await this.leagueRepository
+      .createQueryBuilder('league')
+      .where('league.organizerId = :id', { id })
+      .getCount();
+    const matchesCount = await this.leagueRepository
+      .createQueryBuilder('league')
+      .where('league.organizerId = :id', { id })
+      .innerJoinAndSelect('league.matches', 'matches')
+      .getCount();
+    return { leagueCount, matchesCount };
+  }
+
   async findOne(id: number) {
     const league = await this.leagueRepository.findOneBy({ id });
     if (!league) throw new NotFoundException(`Liga con ${id} no encontrada.`);
