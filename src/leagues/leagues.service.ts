@@ -90,7 +90,7 @@ export class LeaguesService {
     const matchesCount = await this.leagueRepository
       .createQueryBuilder('league')
       .where('league.organizerId = :id', { id })
-      .leftJoin('league.matches', 'matches')
+      .leftJoinAndSelect('league.matches', 'matches')
       .getCount();
     return { leagueCount, matchesCount };
   }
