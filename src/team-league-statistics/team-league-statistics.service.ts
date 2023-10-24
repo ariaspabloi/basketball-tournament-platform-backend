@@ -36,8 +36,21 @@ export class TeamLeagueStatisticsService {
       .createQueryBuilder('team-league-statistics')
       .leftJoinAndSelect('team-league-statistics.league', 'league')
       .leftJoinAndSelect('team-league-statistics.team', 'team')
+      .leftJoinAndSelect('league.winner', 'user')
       .where('team-league-statistics.teamId IN (:...teams)', { teams: teams })
+      .select(['team-league-statistics', 'league', 'user.id', 'user.name'])
       .getMany();
     return statistics;
   }
+
+  /*
+      .select(['team-league-statistics', 'league', 'league.winnerId'])
+      .select([
+        'league.id',
+        'match',
+        'homeTeam',
+        'awayTeam',
+        'awayClub.name',
+        'homeClub.name',
+      ]) */
 }
