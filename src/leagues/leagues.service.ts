@@ -87,11 +87,13 @@ export class LeaguesService {
       .createQueryBuilder('league')
       .where('league.organizerId = :id', { id })
       .getCount();
-    const matchesCount = await this.leagueRepository
-      .createQueryBuilder('league')
-      .where('league.organizerId = :id', { id })
-      .leftJoinAndSelect('league.matches', 'matches')
-      .getCount();
+    const matchesCount = (
+      await this.leagueRepository
+        .createQueryBuilder('league')
+        .where('league.organizerId = :id', { id })
+        .leftJoinAndSelect('league.matches', 'matches')
+        .getOne()
+    ).matches.length;
     return { leagueCount, matchesCount };
   }
 
