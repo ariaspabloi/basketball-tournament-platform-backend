@@ -97,9 +97,12 @@ export class LeaguesService {
 
   async update(id: number, updateLeagueDto: UpdateLeagueDto) {
     //TODO: borrar matches si se cambia las fechas
+    const { winnerId, ...updateLeague } = updateLeagueDto;
+    const winner = await this.userSevice.findClub(winnerId);
     const league = await this.leagueRepository.preload({
       id,
-      ...updateLeagueDto,
+      ...updateLeague,
+      winner,
     });
     if (!league) throw new NotFoundException(`Liga con ${id} no encontrada.`);
     await this.leagueRepository.save(league);
