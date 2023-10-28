@@ -13,6 +13,7 @@ import { AuthModule } from './auth/auth.module';
 import { config } from './config/config';
 import { APP_GUARD } from '@nestjs/core';
 import { RolesAuthGuard } from './auth/roles-auth.guard';
+import { BoardModule } from './board/board.module';
 
 @Module({
   imports: [
@@ -42,6 +43,7 @@ import { RolesAuthGuard } from './auth/roles-auth.guard';
     MatchesModule,
     PlayerStatisticsModule,
     AuthModule,
+    BoardModule,
   ],
   controllers: [],
   providers: [

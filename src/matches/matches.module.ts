@@ -9,6 +9,7 @@ import { LeaguesModule } from 'src/leagues/leagues.module';
 @Module({
   controllers: [MatchesController],
   providers: [MatchesService],
+  exports: [MatchesService],
   imports: [TypeOrmModule.forFeature([Match]), TeamsModule, LeaguesModule],
 })
 export class MatchesModule {}

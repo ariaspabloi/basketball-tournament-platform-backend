@@ -38,7 +38,21 @@ export class MatchesService {
   }
 
   async findOne(id: number) {
-    const match = await this.matchRepository.findOneBy({ id });
+    const match = await this.matchRepository
+      .createQueryBuilder('match')
+      .where('match.id = :id', { id })
+      .leftJoinAndSelect('match.away', 'awayTeam')
+      .leftJoinAndSelect('match.home', 'homeTeam')
+      .leftJoinAndSelect('homeTeam.club', 'homeClub')
+      .leftJoinAndSelect('awayTeam.club', 'awayClub')
+      .select([
+        'match',
+        'awayTeam',
+        'homeTeam',
+        'homeClub.name',
+        'awayClub.name',
+      ])
+      .getOne();
     if (!match)
       throw new NotFoundException(`Equipo con id ${id} no encontrado.`);
     return match;

@@ -39,6 +39,14 @@ export class PlayersService {
     return players;
   }
 
+  async findByTeam(teamId) {
+    const players = await this.playerRepository
+      .createQueryBuilder('player')
+      .where('player.teamId = :teamId', { teamId })
+      .getMany();
+    return players;
+  }
+
   async findOne(id: number) {
     const player = await this.playerRepository.findOneBy({ id });
     if (!player)

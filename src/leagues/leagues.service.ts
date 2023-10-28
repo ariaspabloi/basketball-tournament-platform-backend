@@ -39,7 +39,9 @@ export class LeaguesService {
   }
 
   async findAll() {
-    const leagues = await this.leagueRepository.find();
+    const leagues = await this.leagueRepository.find({
+      relations: ['organizer'],
+    });
     return leagues;
   }
 
