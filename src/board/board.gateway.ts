@@ -85,7 +85,7 @@ export class BoardGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   @SubscribeMessage('resetClock')
   onReset(client: Socket, payload) {
-    this.wss.to([...client.rooms][1]).emit('startClock', payload);
+    this.wss.to([...client.rooms][1]).emit('resetClock', payload);
   }
   //Short
 
@@ -95,10 +95,9 @@ export class BoardGateway implements OnGatewayConnection, OnGatewayDisconnect {
     this.wss.to([...client.rooms][1]).emit('stopShort', payload);
   }
 
-  @SubscribeMessage('resumeShort')
-  onResumeShort(client: Socket, payload) {
-    console.log('resumeShort', payload);
-    this.wss.to([...client.rooms][1]).emit('resumeShort', payload);
+  @SubscribeMessage('resetShort')
+  onResetShort(client: Socket, payload) {
+    this.wss.to([...client.rooms][1]).emit('resetShort', payload);
   }
 
   @SubscribeMessage('startShort')
