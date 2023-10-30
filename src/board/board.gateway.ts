@@ -89,6 +89,12 @@ export class BoardGateway implements OnGatewayConnection, OnGatewayDisconnect {
   }
   //Short
 
+  @SubscribeMessage('joinShort')
+  onJoinShort(client: Socket, payload) {
+    console.log('joinShort', payload, payload.matchId, client.id);
+    client.join(payload.matchId);
+  }
+
   @SubscribeMessage('stopShort')
   onStopShort(client: Socket, payload) {
     console.log('stopShort', payload);
