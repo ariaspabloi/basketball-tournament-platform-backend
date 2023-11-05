@@ -30,6 +30,9 @@ export class User {
   @Column('text')
   password: string;
 
+  @Column('text', { default: 'default.png' })
+  image?: string;
+
   @OneToMany(() => Team, (team) => team.club, { cascade: false })
   teams?: Team[];
 

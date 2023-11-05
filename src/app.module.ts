@@ -14,6 +14,7 @@ import { config } from './config/config';
 import { APP_GUARD } from '@nestjs/core';
 import { RolesAuthGuard } from './auth/roles-auth.guard';
 import { BoardModule } from './board/board.module';
+import { FilesModule } from './files/files.module';
 
 @Module({
   imports: [
@@ -44,6 +45,7 @@ import { BoardModule } from './board/board.module';
     PlayerStatisticsModule,
     AuthModule,
     BoardModule,
+    FilesModule,
   ],
   controllers: [],
   providers: [

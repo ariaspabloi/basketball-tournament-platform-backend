@@ -6,12 +6,19 @@ import {
   Patch,
   Param,
   Delete,
+  UseInterceptors,
+  UploadedFile,
+  ParseFilePipeBuilder,
+  Req,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { Roles } from 'src/auth/roles/roles.decorator';
 import { Role } from 'src/auth/roles/role.enum';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { diskStorage } from 'multer';
+import { extname } from 'path';
 
 @Controller('clubs')
 export class ClubsController {
@@ -31,6 +38,37 @@ export class ClubsController {
   @Roles(Role.Administrator)
   Count() {
     return this.usersService.getClubCount();
+  }
+
+  @Post('image')
+  @Roles(Role.Club)
+  @UseInterceptors(
+    FileInterceptor('file', {
+      storage: diskStorage({
+        destination: './files/images',
+        filename: (req, file, callback) => {
+          const uniqueSuffix =
+            Date.now() + '-' + Math.round(Math.random() * 1e9);
+          const ext = extname(file.originalname);
+          const filename = `${uniqueSuffix}${ext}`;
+          callback(null, filename);
+        },
+      }),
+    }),
+  )
+  handleUpload(
+    @UploadedFile(
+      new ParseFilePipeBuilder()
+        .addFileTypeValidator({
+          fileType: /jpg|jpeg|png|gif/,
+        })
+        .build(),
+    )
+    file: Express.Multer.File,
+    @Req() req: any,
+  ) {
+    console.log(req.user.sub);
+    return this.usersService.updateImage(req.user.sub, file.filename);
   }
 
   @Get(':id')

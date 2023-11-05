@@ -56,6 +56,13 @@ export class UsersService {
     return count;
   }
 
+  async updateImage(id, image) {
+    //TODO: delete old image
+    const user = await this.userRepository.preload({ id, image });
+    await this.userRepository.save(user);
+    return user;
+  }
+
   async getClubCount() {
     return await this.getCount(this.CLUBROLEID);
   }
