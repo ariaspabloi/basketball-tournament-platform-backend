@@ -55,10 +55,12 @@ export class PlayersService {
   }
 
   async update(id: number, updatePlayerDto: UpdatePlayerDto) {
-    const team = await this.teamService.findOne(updatePlayerDto.teamId);
+    const { teamId, ...playerInfo } = updatePlayerDto;
+    const team = await this.teamService.findOne(teamId);
     const player = await this.playerRepository.preload({
       id,
       team,
+      ...playerInfo,
     });
     if (!player)
       throw new NotFoundException(`Jugador con id ${id} no encontrado.`);
