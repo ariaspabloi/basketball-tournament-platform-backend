@@ -35,16 +35,20 @@ export class MatchesService {
   async findAll() {
     const teams = await this.matchRepository
       .createQueryBuilder('match')
+      .leftJoinAndSelect('match.league', 'league')
       .leftJoinAndSelect('match.away', 'awayTeam')
       .leftJoinAndSelect('match.home', 'homeTeam')
       .leftJoinAndSelect('homeTeam.club', 'homeClub')
       .leftJoinAndSelect('awayTeam.club', 'awayClub')
       .select([
         'match',
+        'league',
         'awayTeam',
         'homeTeam',
         'homeClub.name',
         'awayClub.name',
+        'homeClub.image',
+        'awayClub.image',
       ])
       .getMany();
     return teams;
