@@ -51,6 +51,7 @@ export class MatchesService {
         'awayClub.image',
       ])
       .getMany();
+
     return teams;
   }
 
