@@ -67,7 +67,9 @@ export class ClubsController {
         .addFileTypeValidator({
           fileType: /jpg|jpeg|png/,
         })
-        .build(),
+        .build({
+          fileIsRequired: false,
+        }),
     )
     file: Express.Multer.File,
     @Req() req: any,
