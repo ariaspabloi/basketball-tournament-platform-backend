@@ -33,7 +33,20 @@ export class MatchesService {
   }
 
   async findAll() {
-    const teams = await this.matchRepository.find();
+    const teams = await this.matchRepository
+      .createQueryBuilder('match')
+      .leftJoinAndSelect('match.away', 'awayTeam')
+      .leftJoinAndSelect('match.home', 'homeTeam')
+      .leftJoinAndSelect('homeTeam.club', 'homeClub')
+      .leftJoinAndSelect('awayTeam.club', 'awayClub')
+      .select([
+        'match',
+        'awayTeam',
+        'homeTeam',
+        'homeClub.name',
+        'awayClub.name',
+      ])
+      .getMany();
     return teams;
   }
 

@@ -40,6 +40,11 @@ export class ClubsController {
     return this.usersService.getClubCount();
   }
 
+  @Get('/players/:id')
+  findPlayersByClub(@Param('id') id: string) {
+    return this.usersService.findAllPlayersByClubId(+id);
+  }
+
   @Patch('update-profile')
   @Roles(Role.Club)
   @UseInterceptors(
@@ -60,7 +65,7 @@ export class ClubsController {
     @UploadedFile(
       new ParseFilePipeBuilder()
         .addFileTypeValidator({
-          fileType: /jpg|jpeg|png|gif/,
+          fileType: /jpg|jpeg|png/,
         })
         .build(),
     )

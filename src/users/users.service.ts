@@ -10,6 +10,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
 import { Role } from './entities/role.entity';
 import { Repository } from 'typeorm';
+import { Player } from 'src/players/entities/player.entity';
 
 @Injectable()
 export class UsersService {
@@ -54,6 +55,25 @@ export class UsersService {
     if (!user) throw new NotFoundException(`User con ${id} no encontrado`);
     await this.userRepository.save(user);
     return user;
+  }
+
+  async findAllPlayersByClubId(clubId: number) {
+    // Create a query builder for the user repository
+    const users = await this.userRepository
+      .createQueryBuilder('user')
+      .where('user.id = :clubId', { clubId })
+      .leftJoinAndSelect('user.teams', 'team')
+      .leftJoinAndSelect('team.players', 'player')
+      .getMany();
+
+    let players: Player[] = [];
+    users.forEach((user) => {
+      user.teams.forEach((team) => {
+        players = players.concat(team.players);
+      });
+    });
+
+    return players;
   }
 
   private async getCount(role) {
