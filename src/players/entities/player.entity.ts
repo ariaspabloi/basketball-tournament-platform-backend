@@ -22,6 +22,9 @@ export class Player {
   @Column('date')
   birthdate: string;
 
+  @Column('text', { default: 'default_player.png' })
+  image?: string;
+
   @ManyToOne(() => Team, (team) => team.players, {
     cascade: false,
   })
