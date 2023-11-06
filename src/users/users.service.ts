@@ -100,6 +100,15 @@ export class UsersService {
     return await this.update(id, updateUserDto, image);
   }
 
+  async updateProfileOrganizer(
+    id: number,
+    image: string,
+    updateUserDto: UpdateUserDto,
+  ) {
+    await this.findOrganizer(id);
+    return await this.update(id, updateUserDto, image);
+  }
+
   async getClubCount() {
     return await this.getCount(this.CLUBROLEID);
   }
