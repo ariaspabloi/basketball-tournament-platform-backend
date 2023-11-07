@@ -35,6 +35,9 @@ export class User {
   })
   image?: string;
 
+  @Column('text', { default: '' })
+  phone?: string;
+
   @OneToMany(() => Team, (team) => team.club, { cascade: false })
   teams?: Team[];
 
