@@ -175,7 +175,7 @@ export class OrganizerController {
   ) {
     return this.usersService.updateProfileOrganizer(
       req.user.sub,
-      file.filename,
+      file?.filename,
       updateUserDto,
     );
   }
