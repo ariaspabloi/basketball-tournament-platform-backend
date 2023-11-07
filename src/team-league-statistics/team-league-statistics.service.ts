@@ -34,7 +34,13 @@ export class TeamLeagueStatisticsService {
       .innerJoinAndSelect('team-league-statistics.team', 'team')
       .innerJoinAndSelect('team.club', 'user')
       .where('league.id = :id', { id: leagueId })
-      .select(['team-league-statistics', 'team.id', 'team.club', 'user.name'])
+      .select([
+        'team-league-statistics',
+        'team.id',
+        'team.club',
+        'user.name',
+        'user.image',
+      ])
       .getMany();
     if (!leagueStatistics)
       throw new NotFoundException('Estadistica no encontrada.');
@@ -57,6 +63,7 @@ export class TeamLeagueStatisticsService {
         'league',
         'user.id',
         'user.name',
+        'user.image',
       ])
       .getMany();
     return statistics;
