@@ -53,8 +53,8 @@ export class UsersService {
       image,
     });
     if (!user) throw new NotFoundException(`User con ${id} no encontrado`);
-    await this.userRepository.save(user);
-    return user;
+
+    return await this.userRepository.save(user);
   }
 
   async findAllPlayersByClubId(clubId: number) {
