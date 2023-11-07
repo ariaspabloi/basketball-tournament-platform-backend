@@ -45,16 +45,20 @@ export class UsersService {
   private async update(
     id: number,
     updateUserDto: UpdateUserDto,
-    image: string = null,
+    image?: string,
   ) {
-    const user = await this.userRepository.preload({
+    const userExists: User = await this.userRepository.findOneBy({ id });
+    if (!userExists)
+      throw new NotFoundException(`User with ID ${id} not found`);
+    const userToUpdate = {
       id,
       ...updateUserDto,
-      image,
-    });
-    if (!user) throw new NotFoundException(`User con ${id} no encontrado`);
-
-    return await this.userRepository.save(user);
+      ...(image ? { image } : {}),
+    };
+    const user = await this.userRepository.preload(userToUpdate);
+    const returnUser = await this.userRepository.save(user);
+    delete returnUser.password;
+    return returnUser;
   }
 
   async findAllPlayersByClubId(clubId: number) {
