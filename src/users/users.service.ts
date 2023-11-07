@@ -17,6 +17,7 @@ export class UsersService {
   private readonly logger = new Logger('UserService');
   private readonly CLUBROLEID = 3;
   private readonly ORGANIZERROLERID = 2;
+  private readonly ADMINROLERID = 1;
 
   constructor(
     @InjectRepository(User)
@@ -104,6 +105,15 @@ export class UsersService {
     return await this.update(id, updateUserDto, image);
   }
 
+  async updateProfileAdmin(
+    id: number,
+    image: string,
+    updateUserDto: UpdateUserDto,
+  ) {
+    await this.findAdmin(id);
+    return await this.update(id, updateUserDto, image);
+  }
+
   async updateProfileOrganizer(
     id: number,
     image: string,
@@ -136,6 +146,11 @@ export class UsersService {
   async findAllClubs() {
     const clubs = await this.findAllByRole(this.CLUBROLEID);
     return clubs;
+  }
+
+  async findAdmin(id: number) {
+    const admin = await this.findOne(id, this.ADMINROLERID);
+    return admin;
   }
 
   async findClub(id: number) {
