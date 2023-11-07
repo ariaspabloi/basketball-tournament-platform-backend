@@ -144,7 +144,7 @@ export class OrganizerController {
   }
 
   @Patch('update-profile')
-  @Roles(Role.Organizer)
+  @Roles(Role.Administrator)
   @UseInterceptors(
     FileInterceptor('file', {
       storage: diskStorage({
