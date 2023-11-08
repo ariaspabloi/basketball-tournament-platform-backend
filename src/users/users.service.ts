@@ -26,7 +26,7 @@ export class UsersService {
     private readonly roleRepository: Repository<Role>,
   ) {}
 
-  private async create(userDetails, role, image) {
+  private async create(userDetails, role, image = undefined) {
     const user = await this.userRepository.create({
       ...userDetails,
       ...(image ? { image } : {}),
