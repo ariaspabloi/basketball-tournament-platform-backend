@@ -22,7 +22,7 @@ export class PlayersService {
       team,
     });
     await this.playerRepository.save(player);
-    return player;
+    return { ...player, team: { club: { name: team.club.name } } };
   }
 
   async getCount() {
