@@ -26,8 +26,12 @@ export class UsersService {
     private readonly roleRepository: Repository<Role>,
   ) {}
 
-  private async create(userDetails, role) {
-    const user = await this.userRepository.create({ ...userDetails, role });
+  private async create(userDetails, role, image) {
+    const user = await this.userRepository.create({
+      ...userDetails,
+      ...(image ? { image } : {}),
+      role,
+    });
     await this.userRepository.save(user);
     return user;
   }
@@ -170,10 +174,9 @@ export class UsersService {
   async createOrganizer(createUserDto: CreateUserDto, image: string) {
     const role = await this.roleRepository.findOneBy({
       id: this.ORGANIZERROLERID,
-      ...(image ? { image } : {}),
     });
     if (!role) throw new InternalServerErrorException('Rol no encontrado');
-    return await this.create(createUserDto, role);
+    return await this.create(createUserDto, role, image);
   }
 
   async findAllOrganizers() {
