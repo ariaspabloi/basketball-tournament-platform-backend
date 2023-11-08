@@ -185,9 +185,13 @@ export class UsersService {
     return club;
   }
 
-  async updateOrganizer(id: number, updateUserDto: UpdateUserDto) {
+  async updateOrganizer(
+    id: number,
+    image: string,
+    updateUserDto: UpdateUserDto,
+  ) {
     await this.findOrganizer(id);
-    return await this.update(id, updateUserDto);
+    return await this.update(id, updateUserDto, image);
   }
   async removeOrganizer(id: number) {
     const user = await this.findOrganizer(id);

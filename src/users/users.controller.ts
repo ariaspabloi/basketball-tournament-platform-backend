@@ -191,9 +191,40 @@ export class OrganizerController {
     return this.usersService.findOrganizer(+id);
   }
 
+  @UseInterceptors(
+    FileInterceptor('file', {
+      storage: diskStorage({
+        destination: './files/images',
+        filename: (req, file, callback) => {
+          const uniqueSuffix =
+            Date.now() + '-' + Math.round(Math.random() * 1e9);
+          const ext = extname(file.originalname);
+          const filename = `${uniqueSuffix}${ext}`;
+          callback(null, filename);
+        },
+      }),
+    }),
+  )
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.usersService.updateOrganizer(+id, updateUserDto);
+  update(
+    @UploadedFile(
+      new ParseFilePipeBuilder()
+        .addFileTypeValidator({
+          fileType: /jpg|jpeg|png/,
+        })
+        .build({
+          fileIsRequired: false,
+        }),
+    )
+    file: Express.Multer.File,
+    @Param('id') id: string,
+    @Body() updateUserDto: UpdateUserDto,
+  ) {
+    return this.usersService.updateOrganizer(
+      +id,
+      file?.filename,
+      updateUserDto,
+    );
   }
 
   @Delete(':id')
