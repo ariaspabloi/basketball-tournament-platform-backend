@@ -19,14 +19,41 @@ import { Role } from 'src/auth/roles/role.enum';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { extname } from 'path';
+import filenameGenerator from 'src/utils/fileNameGenerator';
 
 @Controller('clubs')
 export class ClubsController {
   constructor(private readonly usersService: UsersService) {}
 
+  @UseInterceptors(
+    FileInterceptor('file', {
+      storage: diskStorage({
+        destination: './files/images',
+        filename: (req, file, callback) => {
+          const uniqueSuffix =
+            Date.now() + '-' + Math.round(Math.random() * 1e9);
+          const ext = extname(file.originalname);
+          const filename = `${uniqueSuffix}${ext}`;
+          callback(null, filename);
+        },
+      }),
+    }),
+  )
   @Post()
-  create(@Body() createUserDto: CreateUserDto) {
-    return this.usersService.createClub(createUserDto);
+  create(
+    @UploadedFile(
+      new ParseFilePipeBuilder()
+        .addFileTypeValidator({
+          fileType: /jpg|jpeg|png/,
+        })
+        .build({
+          fileIsRequired: false,
+        }),
+    )
+    file: Express.Multer.File,
+    @Body() createUserDto: CreateUserDto,
+  ) {
+    return this.usersService.createClub(createUserDto, file?.filename);
   }
 
   @Get()
@@ -51,13 +78,7 @@ export class ClubsController {
     FileInterceptor('file', {
       storage: diskStorage({
         destination: './files/images',
-        filename: (req, file, callback) => {
-          const uniqueSuffix =
-            Date.now() + '-' + Math.round(Math.random() * 1e9);
-          const ext = extname(file.originalname);
-          const filename = `${uniqueSuffix}${ext}`;
-          callback(null, filename);
-        },
+        filename: filenameGenerator,
       }),
     }),
   )
@@ -88,13 +109,7 @@ export class ClubsController {
     FileInterceptor('file', {
       storage: diskStorage({
         destination: './files/images',
-        filename: (req, file, callback) => {
-          const uniqueSuffix =
-            Date.now() + '-' + Math.round(Math.random() * 1e9);
-          const ext = extname(file.originalname);
-          const filename = `${uniqueSuffix}${ext}`;
-          callback(null, filename);
-        },
+        filename: filenameGenerator,
       }),
     }),
   )
@@ -117,10 +132,30 @@ export class ClubsController {
   findOne(@Param('id') id: string) {
     return this.usersService.findClub(+id);
   }
-
+  @UseInterceptors(
+    FileInterceptor('file', {
+      storage: diskStorage({
+        destination: './files/images',
+        filename: filenameGenerator,
+      }),
+    }),
+  )
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.usersService.updateClub(+id, updateUserDto);
+  update(
+    @UploadedFile(
+      new ParseFilePipeBuilder()
+        .addFileTypeValidator({
+          fileType: /jpg|jpeg|png/,
+        })
+        .build({
+          fileIsRequired: false,
+        }),
+    )
+    file: Express.Multer.File,
+    @Param('id') id: string,
+    @Body() updateUserDto: UpdateUserDto,
+  ) {
+    return this.usersService.updateClub(+id, updateUserDto, file?.filename);
   }
 
   @Delete(':id')
@@ -136,13 +171,7 @@ export class OrganizerController {
     FileInterceptor('file', {
       storage: diskStorage({
         destination: './files/images',
-        filename: (req, file, callback) => {
-          const uniqueSuffix =
-            Date.now() + '-' + Math.round(Math.random() * 1e9);
-          const ext = extname(file.originalname);
-          const filename = `${uniqueSuffix}${ext}`;
-          callback(null, filename);
-        },
+        filename: filenameGenerator,
       }),
     }),
   )
@@ -174,13 +203,7 @@ export class OrganizerController {
     FileInterceptor('file', {
       storage: diskStorage({
         destination: './files/images',
-        filename: (req, file, callback) => {
-          const uniqueSuffix =
-            Date.now() + '-' + Math.round(Math.random() * 1e9);
-          const ext = extname(file.originalname);
-          const filename = `${uniqueSuffix}${ext}`;
-          callback(null, filename);
-        },
+        filename: filenameGenerator,
       }),
     }),
   )
@@ -220,13 +243,7 @@ export class OrganizerController {
     FileInterceptor('file', {
       storage: diskStorage({
         destination: './files/images',
-        filename: (req, file, callback) => {
-          const uniqueSuffix =
-            Date.now() + '-' + Math.round(Math.random() * 1e9);
-          const ext = extname(file.originalname);
-          const filename = `${uniqueSuffix}${ext}`;
-          callback(null, filename);
-        },
+        filename: filenameGenerator,
       }),
     }),
   )
@@ -268,13 +285,7 @@ export class AdminController {
     FileInterceptor('file', {
       storage: diskStorage({
         destination: './files/images',
-        filename: (req, file, callback) => {
-          const uniqueSuffix =
-            Date.now() + '-' + Math.round(Math.random() * 1e9);
-          const ext = extname(file.originalname);
-          const filename = `${uniqueSuffix}${ext}`;
-          callback(null, filename);
-        },
+        filename: filenameGenerator,
       }),
     }),
   )

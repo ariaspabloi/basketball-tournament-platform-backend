@@ -141,10 +141,10 @@ export class UsersService {
     return user;
   }
 
-  async createClub(createUserDto: CreateUserDto) {
+  async createClub(createUserDto: CreateUserDto, image: string) {
     const role = await this.roleRepository.findOneBy({ id: this.CLUBROLEID });
     if (!role) throw new InternalServerErrorException('Rol no encontrado');
-    return await this.create(createUserDto, role);
+    return await this.create(createUserDto, role, image);
   }
 
   async findAllClubs() {
@@ -162,9 +162,9 @@ export class UsersService {
     return club;
   }
 
-  async updateClub(id: number, updateUserDto: UpdateUserDto) {
+  async updateClub(id: number, updateUserDto: UpdateUserDto, image: string) {
     await this.findClub(id);
-    return await this.update(id, updateUserDto);
+    return await this.update(id, updateUserDto, image);
   }
   async removeClub(id: number) {
     const user = await this.findClub(id);
