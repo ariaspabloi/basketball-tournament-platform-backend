@@ -167,9 +167,10 @@ export class UsersService {
     await this.userRepository.remove(user);
   }
 
-  async createOrganizer(createUserDto: CreateUserDto) {
+  async createOrganizer(createUserDto: CreateUserDto, image: string) {
     const role = await this.roleRepository.findOneBy({
       id: this.ORGANIZERROLERID,
+      ...(image ? { image } : {}),
     });
     if (!role) throw new InternalServerErrorException('Rol no encontrado');
     return await this.create(createUserDto, role);
