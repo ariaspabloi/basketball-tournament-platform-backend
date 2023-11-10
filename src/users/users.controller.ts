@@ -98,7 +98,7 @@ export class ClubsController {
   ) {
     return this.usersService.updateProfileClub(
       req.user.sub,
-      file.filename,
+      file?.filename,
       updateUserDto,
     );
   }
