@@ -11,7 +11,6 @@ import { User } from './entities/user.entity';
 import { Role } from './entities/role.entity';
 import { Repository } from 'typeorm';
 import { Player } from 'src/players/entities/player.entity';
-import { Division } from '../divisions/entities/division.entity';
 
 @Injectable()
 export class UsersService {
@@ -204,19 +203,32 @@ export class UsersService {
   }
 
   async findUserLeagues(userId: number): Promise<any[]> {
-    const user = await this.userRepository.findOne({
-      where: { id: userId },
-      relations: [
-        'teams',
-        'teams.division',
-        'teams.teamLeagueStatistics',
-        'teams.teamLeagueStatistics.league',
-        'teams.awayMatches',
-        'teams.homeMatches',
-        'teams.awayMatches.league',
-        'teams.homeMatches.league',
-      ],
-    });
+    const user = await this.userRepository
+      .createQueryBuilder('user')
+      .leftJoinAndSelect('user.teams', 'team')
+      .leftJoinAndSelect('team.division', 'division')
+      .leftJoinAndSelect('team.teamLeagueStatistics', 'teamLeagueStatistic')
+      .leftJoinAndSelect('teamLeagueStatistic.league', 'league')
+      .leftJoinAndSelect('team.awayMatches', 'awayMatch')
+      .leftJoin('awayMatch.league', 'awayLeague')
+      .addSelect(['awayLeague.id'])
+      .leftJoinAndSelect('awayMatch.home', 'awayHome')
+      .leftJoin('awayHome.club', 'awayHomeClub')
+      .addSelect(['awayHomeClub.id', 'awayHomeClub.name', 'awayHomeClub.image'])
+      .leftJoinAndSelect('awayMatch.away', 'awayAway')
+      .leftJoin('awayAway.club', 'awayAwayClub')
+      .addSelect(['awayAwayClub.id', 'awayAwayClub.name', 'awayAwayClub.image'])
+      .leftJoinAndSelect('team.homeMatches', 'homeMatch')
+      .leftJoin('homeMatch.league', 'homeLeague')
+      .addSelect(['homeLeague.id'])
+      .leftJoinAndSelect('homeMatch.home', 'homeHome')
+      .leftJoin('homeHome.club', 'homeHomeClub')
+      .addSelect(['homeHomeClub.id', 'homeHomeClub.name', 'homeHomeClub.image'])
+      .leftJoinAndSelect('homeMatch.away', 'homeAway')
+      .leftJoin('homeAway.club', 'homeAwayClub')
+      .addSelect(['homeAwayClub.id', 'homeAwayClub.name', 'homeAwayClub.image'])
+      .where('user.id = :userId', { userId })
+      .getOne();
 
     if (!user) {
       return [];
@@ -228,16 +240,21 @@ export class UsersService {
         coach: team.coach,
         teamLeagueParticipations: team.teamLeagueStatistics.map((stat) => {
           const league = stat.league;
+          delete stat.league;
           return {
             leagueInfo: league,
             teamLeagueStatistics: stat,
             matches: [
-              ...team.awayMatches.filter(
-                (match) => match.league.id === league.id,
-              ),
-              ...team.homeMatches.filter(
-                (match) => match.league.id === league.id,
-              ),
+              ...team.awayMatches.filter((match) => {
+                const result = match.league.id === league.id;
+                delete match.league;
+                return result;
+              }),
+              ...team.homeMatches.filter((match) => {
+                const result = match.league.id === league.id;
+                delete match.league;
+                return result;
+              }),
             ],
           };
         }),
