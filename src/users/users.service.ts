@@ -246,13 +246,15 @@ export class UsersService {
             teamLeagueStatistics: stat,
             matches: [
               ...team.awayMatches.filter((match) => {
+                //console.log('away', team.awayMatches);
                 const result = match.league.id === league.id;
-                delete match.league;
+                //delete match.league;
                 return result;
               }),
               ...team.homeMatches.filter((match) => {
+                //console.log('home', team.homeMatches);
                 const result = match.league.id === league.id;
-                delete match.league;
+                //delete match.league;
                 return result;
               }),
             ],
