@@ -72,6 +72,12 @@ export class ClubsController {
     return this.usersService.findAllPlayersByClubId(+id);
   }
 
+  @Get('leagues')
+  @Roles(Role.Club)
+  findUserLeagues(@Req() req: any) {
+    return this.usersService.findUserLeagues(req.user.sub);
+  }
+
   @Patch('update-profile')
   @Roles(Role.Club)
   @UseInterceptors(

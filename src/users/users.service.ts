@@ -11,6 +11,7 @@ import { User } from './entities/user.entity';
 import { Role } from './entities/role.entity';
 import { Repository } from 'typeorm';
 import { Player } from 'src/players/entities/player.entity';
+import { Division } from '../divisions/entities/division.entity';
 
 @Injectable()
 export class UsersService {
@@ -200,5 +201,47 @@ export class UsersService {
   async removeOrganizer(id: number) {
     const user = await this.findOrganizer(id);
     await this.userRepository.remove(user);
+  }
+
+  async findUserLeagues(userId: number): Promise<any[]> {
+    const user = await this.userRepository.findOne({
+      where: { id: userId },
+      relations: [
+        'teams',
+        'teams.division',
+        'teams.teamLeagueStatistics',
+        'teams.teamLeagueStatistics.league',
+        'teams.awayMatches',
+        'teams.homeMatches',
+        'teams.awayMatches.league',
+        'teams.homeMatches.league',
+      ],
+    });
+
+    if (!user) {
+      return [];
+    }
+    return user.teams.map((team) => {
+      return {
+        teamId: team.id,
+        division: team.division,
+        coach: team.coach,
+        teamLeagueParticipations: team.teamLeagueStatistics.map((stat) => {
+          const league = stat.league;
+          return {
+            leagueInfo: league,
+            teamLeagueStatistics: stat,
+            matches: [
+              ...team.awayMatches.filter(
+                (match) => match.league.id === league.id,
+              ),
+              ...team.homeMatches.filter(
+                (match) => match.league.id === league.id,
+              ),
+            ],
+          };
+        }),
+      };
+    });
   }
 }
