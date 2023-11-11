@@ -235,7 +235,7 @@ export class UsersService {
     }
     return user.teams.map((team) => {
       return {
-        teamId: team.id,
+        id: team.id,
         division: team.division,
         coach: team.coach,
         teamLeagueParticipations: team.teamLeagueStatistics.map((stat) => {
