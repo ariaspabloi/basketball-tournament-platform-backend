@@ -84,6 +84,8 @@ export class LeaguesService {
         'team.id',
         'club.name',
         'club.id',
+        'division.id',
+        'division.category',
       ])
       .getOne();
     return leagueClubs?.teamLeagueStatistics.map((item) => item.team) || [];
