@@ -37,7 +37,7 @@ export class BoardGateway implements OnGatewayConnection, OnGatewayDisconnect {
     client.emit('init-from-server', {
       matchInfo: {
         ...info,
-        period: 0,
+        period: 1,
         homePoints: 0,
         awayPoints: 0,
         activeHomePlayers: info.homePlayers.slice(0, 5),
@@ -46,8 +46,7 @@ export class BoardGateway implements OnGatewayConnection, OnGatewayDisconnect {
         awayPlayersFaults,
         homePlayersPoints,
         awayPlayersPoints,
-        homeTotalFouls: 0,
-        awayTotalFouls: 0,
+        direction: 'none',
       },
     });
   }
