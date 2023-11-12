@@ -77,6 +77,7 @@ export class LeaguesService {
       .innerJoinAndSelect('league.teamLeagueStatistics', 'teamLeagueStatistics')
       .innerJoinAndSelect('teamLeagueStatistics.team', 'team')
       .innerJoinAndSelect('team.club', 'club')
+      .innerJoinAndSelect('team.division', 'division')
       .select([
         'league.id',
         'teamLeagueStatistics.id',
