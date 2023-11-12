@@ -85,7 +85,7 @@ export class LeaguesService {
         'club.id',
       ])
       .getOne();
-    return leagueClubs.teamLeagueStatistics.map((item) => item.team);
+    return leagueClubs?.teamLeagueStatistics.map((item) => item.team) || [];
   }
 
   async countLeagueClubs(id) {
