@@ -52,17 +52,21 @@ export class LeaguesService {
       .innerJoinAndSelect('league.matches', 'match')
       .innerJoinAndSelect('match.home', 'homeTeam')
       .innerJoinAndSelect('match.away', 'awayTeam')
-      .innerJoinAndSelect('awayTeam.club', 'awayClub')
-      .innerJoinAndSelect('homeTeam.club', 'homeClub')
+      .leftJoin('homeTeam.club', 'homeClub') // Corrected alias
+      .leftJoin('awayTeam.club', 'awayClub') // Corrected alias
       .select([
         'league.id',
         'match',
-        'homeTeam',
-        'awayTeam',
-        'awayClub.name',
-        'homeClub.name',
+        'homeTeam.id',
+        'homeTeam.name', // Ensuring consistency in the selection
+        'awayTeam.id',
+        'awayTeam.name', // Ensuring consistency in the selection
+        'homeClub.name', // Using the correct alias
+        'awayClub.name', // Using the correct alias
       ])
-      .getMany();
+      // .groupBy('match.id') // Group By might not be necessary and can be removed if causing issues
+      .getOne();
+
     return leagueMatches;
   }
 

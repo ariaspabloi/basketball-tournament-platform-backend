@@ -83,6 +83,33 @@ export class MatchesService {
     return count;
   }
 
+  async findLeagueMatches(leagueId) {
+    const matches = await this.matchRepository
+      .createQueryBuilder('match')
+      .innerJoinAndSelect('match.league', 'league', 'league.id = :id', {
+        id: leagueId,
+      })
+      .innerJoinAndSelect('match.home', 'homeTeam')
+      .innerJoinAndSelect('homeTeam.club', 'homeClub')
+      .innerJoinAndSelect('match.away', 'awayTeam')
+      .innerJoinAndSelect('awayTeam.club', 'awayClub')
+      .select([
+        'league.id',
+        'match',
+        'awayTeam.id',
+        'awayClub.id',
+        'awayClub.image',
+        'awayClub.name',
+        'homeTeam.id',
+        'homeClub.id',
+        'homeClub.image',
+        'homeClub.name',
+      ])
+      .getMany();
+
+    return matches;
+  }
+
   async findAllByTeam(teamId: number) {
     const team = await this.teamService.findOne(teamId);
     const matches = await this.matchRepository.find({

@@ -33,6 +33,11 @@ export class MatchesController {
     return this.matchesService.getCount();
   }
 
+  @Get('league/:id')
+  findLeagueMatches(@Param('id') id: string) {
+    return this.matchesService.findLeagueMatches(+id);
+  }
+
   @Get('team/:id')
   findAllByTeam(@Param('id') id: string) {
     return this.matchesService.findAllByTeam(+id);
