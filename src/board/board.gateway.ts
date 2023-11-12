@@ -26,10 +26,10 @@ export class BoardGateway implements OnGatewayConnection, OnGatewayDisconnect {
     console.log('init', payload, payload.matchId);
     client.join(payload.matchId);
     const info = await this.boardService.getMatchInfo(payload.matchId);
-    const homePlayersFaults = {};
-    info.homePlayers.forEach((player) => (homePlayersFaults[player.id] = 0));
-    const awayPlayersFaults = {};
-    info.awayPlayers.forEach((player) => (awayPlayersFaults[player.id] = 0));
+    const homePlayersFaults = [{}];
+    info.homePlayers.forEach((player) => (homePlayersFaults[0][player.id] = 0));
+    const awayPlayersFaults = [{}];
+    info.awayPlayers.forEach((player) => (awayPlayersFaults[0][player.id] = 0));
     const homePlayersPoints = {};
     info.homePlayers.forEach((player) => (homePlayersPoints[player.id] = 0));
     const awayPlayersPoints = {};
