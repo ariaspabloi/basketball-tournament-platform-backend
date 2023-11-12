@@ -62,7 +62,7 @@ export class LeaguesService {
         'awayClub.name',
         'homeClub.name',
       ])
-      .getOne();
+      .getMany();
     return leagueMatches;
   }
 
