@@ -35,6 +35,39 @@ export class PlayerStatisticsService {
     return playerStatistics;
   }
 
+  async createOrUpdatePlayerStatistic(
+    playerId: number,
+    matchId: number,
+    updatePlayerStatisticDto: UpdatePlayerStatisticDto,
+  ) {
+    let playerStatistic = await this.playerStatisticsRepository.findOne({
+      where: {
+        player: { id: playerId },
+        match: { id: matchId },
+      },
+    });
+
+    if (playerStatistic) {
+      // Update existing statistic
+      playerStatistic = await this.playerStatisticsRepository.preload({
+        id: playerStatistic.id,
+        ...updatePlayerStatisticDto,
+      });
+      if (!playerStatistic) {
+        throw new NotFoundException(`PlayerStatistic not found.`);
+      }
+    } else {
+      // Create new statistic
+      playerStatistic = this.playerStatisticsRepository.create({
+        player: { id: playerId },
+        match: { id: matchId },
+        ...updatePlayerStatisticDto,
+      });
+    }
+
+    return await this.playerStatisticsRepository.save(playerStatistic);
+  }
+
   async update(id: number, updatePlayerStatisticDto: UpdatePlayerStatisticDto) {
     const playerStatistic = await this.playerStatisticsRepository.preload({
       id,

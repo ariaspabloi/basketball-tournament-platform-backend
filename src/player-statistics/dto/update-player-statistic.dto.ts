@@ -3,41 +3,41 @@ import { IsInt, IsOptional } from 'class-validator';
 export class UpdatePlayerStatisticDto {
   @IsOptional()
   @IsInt()
-  passes: number;
+  passes?: number;
 
   @IsOptional()
   @IsInt()
-  points: number;
+  points?: number;
 
   @IsOptional()
   @IsInt()
-  baskets: number;
+  baskets?: number;
 
   @IsOptional()
   @IsInt()
-  fouls: number;
+  fouls?: number;
 
   @IsOptional()
   @IsInt()
-  assists: number;
+  assists?: number;
 
   @IsOptional()
   @IsInt()
-  steals: number;
+  steals?: number;
 
   @IsOptional()
   @IsInt()
-  rebounds: number;
+  rebounds?: number;
 
   @IsOptional()
   @IsInt()
-  freeThrows: number;
+  freeThrows?: number;
 
   @IsOptional()
   @IsInt()
-  doubleDoubles: number;
+  doubleDoubles?: number;
 
   @IsOptional()
   @IsInt()
-  threePointers: number;
+  threePointers?: number;
 }

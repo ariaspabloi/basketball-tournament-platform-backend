@@ -3,17 +3,17 @@ import { IsDateString, IsInt, IsOptional, MinLength } from 'class-validator';
 export class UpdateMatchDto {
   @IsOptional()
   @IsDateString()
-  dateTime: Date;
+  dateTime?: Date;
 
   @IsOptional()
   @MinLength(4)
-  place: string;
+  place?: string;
 
   @IsOptional()
   @IsInt()
-  homePoints;
+  homePoints?;
 
   @IsOptional()
   @IsInt()
-  awayPoints;
+  awayPoints?;
 }

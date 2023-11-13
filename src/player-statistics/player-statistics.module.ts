@@ -8,6 +8,7 @@ import { PlayersModule } from 'src/players/players.module';
 @Module({
   controllers: [PlayerStatisticsController],
   providers: [PlayerStatisticsService],
+  exports: [PlayerStatisticsService],
   imports: [TypeOrmModule.forFeature([PlayerStatistic]), PlayersModule],
 })
 export class PlayerStatisticsModule {}

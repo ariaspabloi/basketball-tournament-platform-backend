@@ -23,7 +23,6 @@ export class BoardGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   @SubscribeMessage('init')
   async onInit(client: Socket, payload) {
-    console.log('init', payload, payload.matchId);
     client.join(payload.matchId);
     const info = await this.boardService.getMatchInfo(payload.matchId);
     const homePlayersFaults = [{}];
@@ -52,7 +51,6 @@ export class BoardGateway implements OnGatewayConnection, OnGatewayDisconnect {
   }
   @SubscribeMessage('join')
   onJoin(client: Socket, payload) {
-    console.log('join', payload, payload.matchId, client.id);
     client.join(payload.matchId);
     this.wss.to(payload.matchId).emit('new-spectator', {
       id: client.id,
@@ -61,7 +59,6 @@ export class BoardGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   @SubscribeMessage('welcome')
   onInfo(client: Socket, payload) {
-    console.log('welcome, enviar a ', payload.id, { state: payload });
     this.wss.to(payload.id).emit('state', { state: payload.state });
   }
 
@@ -72,7 +69,6 @@ export class BoardGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   @SubscribeMessage('stopClock')
   onStop(client: Socket, payload) {
-    console.log('stopClock', payload);
     this.wss.to([...client.rooms][1]).emit('stopClock', payload);
   }
 
@@ -89,7 +85,6 @@ export class BoardGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   @SubscribeMessage('joinShort')
   onJoinShort(client: Socket, payload) {
-    console.log('joinShort', payload, payload.matchId, client.id);
     client.join(payload.matchId);
   }
 
@@ -112,5 +107,12 @@ export class BoardGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @SubscribeMessage('playBuzzer')
   onPlayBuzzer(client: Socket, payload) {
     this.wss.to([...client.rooms][1]).emit('buzzer', payload);
+  }
+
+  @SubscribeMessage('saveMatch')
+  onSaveMatch(client: Socket, payload) {
+    this.boardService
+      .saveMatch(payload)
+      .then((msg) => this.wss.to([...client.rooms][1]).emit('saved', { msg }));
   }
 }
