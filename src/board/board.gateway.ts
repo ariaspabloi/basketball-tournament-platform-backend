@@ -50,7 +50,6 @@ export class BoardGateway implements OnGatewayConnection, OnGatewayDisconnect {
       },
     });
   }
-
   @SubscribeMessage('join')
   onJoin(client: Socket, payload) {
     console.log('join', payload, payload.matchId, client.id);
@@ -108,5 +107,10 @@ export class BoardGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @SubscribeMessage('startShort')
   onStartShort(client: Socket, payload) {
     this.wss.to([...client.rooms][1]).emit('startShort', payload);
+  }
+
+  @SubscribeMessage('playBuzzer')
+  onPlayBuzzer(client: Socket, payload) {
+    this.wss.to([...client.rooms][1]).emit('buzzer', payload);
   }
 }
