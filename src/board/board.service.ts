@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { MatchesService } from 'src/matches/matches.service';
 import { PlayerStatisticsService } from 'src/player-statistics/player-statistics.service';
 import { PlayersService } from 'src/players/players.service';
+import { TeamLeagueStatisticsService } from 'src/team-league-statistics/team-league-statistics.service';
 import transformArrays from 'src/utils/tranformMatchInfo';
 interface PlayerInfo {
   id: number;
@@ -18,6 +19,7 @@ export class BoardService {
     private readonly matchesService: MatchesService,
     private readonly playersService: PlayersService,
     private readonly playersStatisticsService: PlayerStatisticsService,
+    private readonly teamLeagueStatisticsService: TeamLeagueStatisticsService,
   ) {}
 
   async getMatchInfo(id: number) {
@@ -64,12 +66,19 @@ export class BoardService {
       );
 
       const matchInfo: MatchInfo = { homePoints, awayPoints };
-      await this.matchesService.update(matchId, matchInfo);
-
-      return 'Guardado exitoso';
+      const match = await this.matchesService.update(matchId, matchInfo);
+      const fullMatchInfo = await this.matchesService.findOneLeague(match.id);
+      await this.teamLeagueStatisticsService.updateTeamStatistics(
+        fullMatchInfo.home.id,
+        fullMatchInfo.away.id,
+        awayPoints,
+        homePoints,
+        fullMatchInfo.league.id,
+      );
+      return true;
     } catch (error) {
       console.error(error);
-      return 'Error guardando';
+      return false;
     }
   }
 }

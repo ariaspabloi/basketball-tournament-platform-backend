@@ -113,6 +113,8 @@ export class BoardGateway implements OnGatewayConnection, OnGatewayDisconnect {
   onSaveMatch(client: Socket, payload) {
     this.boardService
       .saveMatch(payload)
-      .then((msg) => this.wss.to([...client.rooms][1]).emit('saved', { msg }));
+      .then((success) =>
+        this.wss.to([...client.rooms][1]).emit('saved', { success }),
+      );
   }
 }

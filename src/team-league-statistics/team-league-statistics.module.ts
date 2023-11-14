@@ -9,6 +9,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 @Module({
   controllers: [TeamLeagueStatisticsController],
   providers: [TeamLeagueStatisticsService],
+  exports: [TeamLeagueStatisticsService],
   imports: [
     TypeOrmModule.forFeature([TeamLeagueStatistic]),
     TeamsModule,

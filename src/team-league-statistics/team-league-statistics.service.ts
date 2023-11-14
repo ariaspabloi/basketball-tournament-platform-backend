@@ -69,6 +69,54 @@ export class TeamLeagueStatisticsService {
     return statistics;
   }
 
+  async updateTeamStatistics(
+    homeId: number,
+    awayId: number,
+    awayPoints: number,
+    homePoints: number,
+    leagueId: number,
+  ) {
+    // Find home team statistic
+    const homeTeamStatistic = await this.teamLeagueRepository.findOne({
+      where: {
+        team: { id: homeId },
+        league: { id: leagueId },
+      },
+    });
+
+    // Find away team statistic
+    const awayTeamStatistic = await this.teamLeagueRepository.findOne({
+      where: {
+        team: { id: awayId },
+        league: { id: leagueId },
+      },
+    });
+
+    if (!homeTeamStatistic || !awayTeamStatistic) {
+      throw new NotFoundException('Team statistics not found.');
+    }
+
+    // Update home team statistic
+    homeTeamStatistic.points += homePoints;
+    homeTeamStatistic.pointsAgainst += awayPoints;
+    homeTeamStatistic.favorablePoints += homePoints;
+    homeTeamStatistic.matchesWon += homePoints > awayPoints ? 1 : 0;
+    homeTeamStatistic.matchesLost += homePoints < awayPoints ? 1 : 0;
+
+    // Update away team statistic
+    awayTeamStatistic.points += awayPoints;
+    awayTeamStatistic.pointsAgainst += homePoints;
+    awayTeamStatistic.favorablePoints += awayPoints;
+    awayTeamStatistic.matchesWon += awayPoints > homePoints ? 1 : 0;
+    awayTeamStatistic.matchesLost += awayPoints < homePoints ? 1 : 0;
+
+    // Save updated statistics
+    await this.teamLeagueRepository.save(homeTeamStatistic);
+    await this.teamLeagueRepository.save(awayTeamStatistic);
+
+    return { homeTeamStatistic, awayTeamStatistic };
+  }
+
   /*
       .select(['team-league-statistics', 'league', 'league.winnerId'])
       .select([

@@ -76,6 +76,20 @@ export class MatchesService {
     return match;
   }
 
+  async findOneLeague(id: number) {
+    const match = await this.matchRepository
+      .createQueryBuilder('match')
+      .where('match.id = :id', { id })
+      .leftJoin('match.league', 'league')
+      .leftJoin('match.away', 'awayTeam')
+      .leftJoin('match.home', 'homeTeam')
+      .select(['match.id', 'awayTeam.id', 'homeTeam.id', 'league.id'])
+      .getOne();
+    if (!match)
+      throw new NotFoundException(`Equipo con id ${id} no encontrado.`);
+    return match;
+  }
+
   async getCount() {
     const count = await this.matchRepository
       .createQueryBuilder('match')
@@ -113,10 +127,7 @@ export class MatchesService {
   async findAllByTeam(teamId: number) {
     const team = await this.teamService.findOne(teamId);
     const matches = await this.matchRepository.find({
-      where: [
-        { home: team },
-        { away: team }, // This is the OR condition
-      ],
+      where: [{ home: team }, { away: team }],
       relations: { away: true, home: true },
     });
     console.log(matches);
@@ -124,14 +135,13 @@ export class MatchesService {
   }
 
   async update(id: number, updateMatchDto: UpdateMatchDto) {
-    //TODO: update team-league-stadistics if not friendly
     const match = await this.matchRepository.preload({
-      id,
+      id: +id,
       ...updateMatchDto,
     });
     if (!match)
-      throw new NotFoundException(`Equipo con id ${id} no encontrado.`);
-    return match;
+      throw new NotFoundException(`Partido con id ${id} no encontrado.`);
+    return await this.matchRepository.save(match);
   }
 
   async remove(id: number) {
