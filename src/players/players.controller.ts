@@ -66,6 +66,11 @@ export class PlayersController {
     return this.playersService.getCount();
   }
 
+  @Get('team/:id')
+  findByTeam(@Param('id') id: string) {
+    return this.playersService.findByTeam(+id);
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.playersService.findOne(+id);
