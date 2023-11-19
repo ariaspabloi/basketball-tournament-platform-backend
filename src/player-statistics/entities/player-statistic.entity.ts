@@ -8,34 +8,31 @@ export class PlayerStatistic {
   id: number;
 
   @Column('int', { default: 0 })
-  passes: number;
-
-  @Column('int', { default: 0 })
-  points: number;
-
-  @Column('int', { default: 0 })
-  baskets: number;
-
-  @Column('int', { default: 0 })
   fouls: number;
 
   @Column('int', { default: 0 })
-  assists: number;
-
-  @Column('int', { default: 0 })
-  steals: number;
-
-  @Column('int', { default: 0 })
-  rebounds: number;
-
-  @Column('int', { default: 0 })
-  freeThrows: number;
+  points: number;
 
   @Column('int', { default: 0 })
   doubleDoubles: number;
 
   @Column('int', { default: 0 })
   threePointers: number;
+
+  @Column('int', { default: 0 })
+  turnovers: number;
+
+  @Column('int', { default: 0 })
+  offensiveRebounds: number;
+
+  @Column('int', { default: 0 })
+  defensiveRebounds: number;
+
+  @Column('int', { default: 0 })
+  assists: number;
+
+  @Column('int', { default: 0 })
+  losses: number;
 
   @ManyToOne(() => Player, (player) => player.playersStatistics, {
     cascade: false,
