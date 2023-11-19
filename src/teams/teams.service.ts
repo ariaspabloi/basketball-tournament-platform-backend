@@ -50,35 +50,42 @@ export class TeamsService {
   async findOwned(clubId: number) {
     const club = await this.userService.findClub(clubId);
 
-    // Fetch teams with players and their statistics
-    const teams = await this.teamRepository.find({
-      where: { club },
-      relations: [
-        'players',
-        'players.playersStatistics',
-        'players.playersStatistics.match',
-        'players.playersStatistics.match.home',
-        'players.playersStatistics.match.away',
-      ],
-    });
+    const teams = await this.teamRepository
+      .createQueryBuilder('team')
+      .where('team.clubId = :clubId', { clubId })
+      .leftJoinAndSelect('team.players', 'player')
+      .leftJoin('player.playersStatistics', 'playerStatistic')
+      .leftJoin('playerStatistic.match', 'match')
+      .leftJoin('match.home', 'homeTeam')
+      .leftJoin('homeTeam.club', 'homeClub')
+      .leftJoin('match.away', 'awayTeam')
+      .leftJoin('awayTeam.club', 'awayClub')
+      .addSelect([
+        'team.id',
+        'team.coach',
+        'team.division',
+        'playerStatistic.id',
+        'playerStatistic.fouls',
+        'playerStatistic.points',
+        'playerStatistic.doubleDoubles',
+        'playerStatistic.threePointers',
+        'playerStatistic.turnovers',
+        'playerStatistic.offensiveRebounds',
+        'playerStatistic.defensiveRebounds',
+        'playerStatistic.assists',
+        'playerStatistic.losses',
+        'match.id',
+        'match.dateTime',
+        'homeTeam.id',
+        'homeClub.name',
+        'homeClub.image',
+        'awayTeam.id',
+        'awayClub.name',
+        'awayClub.image',
+      ])
+      .getMany();
 
-    // Map over teams to structure the data as required
-    const teamsWithPlayerStats = teams.map((team) => ({
-      ...team,
-      players: team.players?.map((player) => ({
-        ...player,
-        playerStatistics: player.playersStatistics?.map((stat) => ({
-          ...stat,
-          matchDateTime: stat.match?.dateTime,
-          homeTeamName: stat.match?.home?.club?.name,
-          homeTeamImage: stat.match?.home?.club?.image,
-          awayTeamName: stat.match?.away?.club?.name,
-          awayTeamImage: stat.match?.away?.club?.image,
-        })),
-      })),
-    }));
-
-    return teamsWithPlayerStats;
+    return teams;
   }
 
   async teamCount(clubId: number) {
