@@ -13,6 +13,19 @@ export class PlayerStatisticsController {
     return this.playerStatisticsService.findOneByPlayer(+playerId);
   }
 
+  @Patch('player/:playerId/match/:matchId')
+  updatePlayerMatchStatistics(
+    @Param('playerId') playerId: string,
+    @Param('matchId') matchId: string,
+    @Body() updatePlayerStatisticDto: UpdatePlayerStatisticDto,
+  ) {
+    return this.playerStatisticsService.createOrUpdatePlayerStatistic(
+      +playerId,
+      +matchId,
+      updatePlayerStatisticDto,
+    );
+  }
+
   @Patch(':id')
   update(
     @Param('id') id: string,
