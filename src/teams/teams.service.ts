@@ -49,11 +49,36 @@ export class TeamsService {
 
   async findOwned(clubId: number) {
     const club = await this.userService.findClub(clubId);
+
+    // Fetch teams with players and their statistics
     const teams = await this.teamRepository.find({
       where: { club },
-      select: ['id', 'coach', 'division'],
+      relations: [
+        'players',
+        'players.playersStatistics',
+        'players.playersStatistics.match',
+        'players.playersStatistics.match.home',
+        'players.playersStatistics.match.away',
+      ],
     });
-    return teams;
+
+    // Map over teams to structure the data as required
+    const teamsWithPlayerStats = teams.map((team) => ({
+      ...team,
+      players: team.players?.map((player) => ({
+        ...player,
+        playerStatistics: player.playersStatistics?.map((stat) => ({
+          ...stat,
+          matchDateTime: stat.match?.dateTime,
+          homeTeamName: stat.match?.home?.club?.name,
+          homeTeamImage: stat.match?.home?.club?.image,
+          awayTeamName: stat.match?.away?.club?.name,
+          awayTeamImage: stat.match?.away?.club?.image,
+        })),
+      })),
+    }));
+
+    return teamsWithPlayerStats;
   }
 
   async teamCount(clubId: number) {
