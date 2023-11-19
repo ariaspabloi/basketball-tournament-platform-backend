@@ -53,6 +53,7 @@ export class TeamsService {
     const teams = await this.teamRepository
       .createQueryBuilder('team')
       .where('team.clubId = :clubId', { clubId })
+      .leftJoinAndSelect('team.division', 'division')
       .leftJoinAndSelect('team.players', 'player')
       .leftJoin('player.playersStatistics', 'playerStatistic')
       .leftJoin('playerStatistic.match', 'match')
@@ -63,7 +64,6 @@ export class TeamsService {
       .addSelect([
         'team.id',
         'team.coach',
-        'team.division',
         'playerStatistic.id',
         'playerStatistic.fouls',
         'playerStatistic.points',
