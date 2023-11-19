@@ -73,12 +73,38 @@ export class UsersService {
       .where('user.id = :clubId', { clubId })
       .leftJoinAndSelect('user.teams', 'team')
       .leftJoinAndSelect('team.players', 'player')
+      .leftJoinAndSelect('player.playersStatistics', 'playerStatistic')
+      .leftJoinAndSelect('playerStatistic.match', 'match')
+      .leftJoinAndSelect('match.home', 'homeTeam')
+      .leftJoinAndSelect('match.away', 'awayTeam')
+      .leftJoinAndSelect('homeTeam.club', 'homeClub')
+      .leftJoinAndSelect('awayTeam.club', 'awayClub')
       .getMany();
 
-    let players: Player[] = [];
+    const players: Player[] = [];
     users.forEach((user) => {
       user.teams.forEach((team) => {
-        players = players.concat(team.players);
+        // Modify the players to include the statistics
+        team.players.forEach((player) => {
+          const playerWithStats = {
+            ...player,
+            statistics: player.playersStatistics.map((stat) => ({
+              ...stat,
+              match: {
+                dateTime: stat.match.dateTime,
+                homeTeam: {
+                  name: stat.match.home.club.name,
+                  image: stat.match.home.club.image,
+                },
+                awayTeam: {
+                  name: stat.match.away.club.name,
+                  image: stat.match.away.club.image,
+                },
+              },
+            })),
+          };
+          players.push(playerWithStats);
+        });
       });
     });
 
