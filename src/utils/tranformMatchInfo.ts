@@ -18,7 +18,9 @@ function transformArrays(foulsArray, pointsObject) {
     result.push({
       id: parseInt(playerId),
       fouls: combinedFouls[playerId] || 0,
-      points: pointsObject[playerId],
+      points: pointsObject[playerId][0],
+      doubleDoubles: pointsObject[playerId][1],
+      threePointers: pointsObject[playerId][2],
     });
   }
 

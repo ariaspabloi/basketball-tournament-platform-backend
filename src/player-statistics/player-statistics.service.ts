@@ -143,7 +143,7 @@ export class PlayerStatisticsService {
       // Add rows to the sheet
       player.statistics.forEach((stat) => {
         const totalPoints =
-          stat.points + stat.doubleDoubles + stat.threePointers;
+          stat.points + stat.doubleDoubles * 2 + stat.threePointers * 3;
         const valoracion =
           totalPoints +
           stat.turnovers +

@@ -7,6 +7,8 @@ import transformArrays from 'src/utils/tranformMatchInfo';
 interface PlayerInfo {
   id: number;
   points: number;
+  doubleDoubles: number;
+  threePointers: number;
   fouls: number;
 }
 interface MatchInfo {
@@ -44,15 +46,15 @@ export class BoardService {
     matchId,
     awayPoints,
     awayPlayersFaults,
-    awayPlayersPoints,
+    awayPlayersPointsFull,
     homePoints,
     homePlayersFaults,
-    homePlayersPoints,
+    homePlayersPointsFull,
   }) {
     try {
       const playersInfo: PlayerInfo[] = [
-        ...transformArrays(awayPlayersFaults, awayPlayersPoints),
-        ...transformArrays(homePlayersFaults, homePlayersPoints),
+        ...transformArrays(awayPlayersFaults, awayPlayersPointsFull),
+        ...transformArrays(homePlayersFaults, homePlayersPointsFull),
       ];
 
       await Promise.all(
@@ -60,7 +62,12 @@ export class BoardService {
           await this.playersStatisticsService.createOrUpdatePlayerStatistic(
             player.id,
             matchId,
-            { points: player.points, fouls: player.fouls },
+            {
+              points: player.points,
+              doubleDoubles: player.doubleDoubles,
+              threePointers: player.threePointers,
+              fouls: player.fouls,
+            },
           );
         }),
       );
