@@ -5,6 +5,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Player } from './entities/player.entity';
 import { Repository } from 'typeorm';
 import { TeamsService } from 'src/teams/teams.service';
+import deleteImage from 'src/utils/deleteImage';
 
 @Injectable()
 export class PlayersService {
@@ -55,16 +56,20 @@ export class PlayersService {
   }
 
   async update(id: number, updatePlayerDto: UpdatePlayerDto) {
-    const { teamId, ...playerInfo } = updatePlayerDto;
+    const { teamId, image, ...playerInfo } = updatePlayerDto;
     const team = await this.teamService.findOne(teamId);
+    const currentPlayer = await this.playerRepository.findOneBy({ id });
+    if (!currentPlayer)
+      throw new NotFoundException(`Jugador con id ${id} no encontrado.`);
+
     const player = await this.playerRepository.preload({
       id,
       team,
       ...playerInfo,
+      ...(image ? { image } : {}),
     });
-    if (!player)
-      throw new NotFoundException(`Jugador con id ${id} no encontrado.`);
     await this.playerRepository.save(player);
+    if (image && currentPlayer.image) deleteImage(currentPlayer.image);
     return player;
   }
 

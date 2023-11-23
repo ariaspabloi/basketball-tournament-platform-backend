@@ -1,7 +1,6 @@
 import {
   Injectable,
   InternalServerErrorException,
-  Logger,
   NotFoundException,
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -12,10 +11,10 @@ import { Role } from './entities/role.entity';
 import { Repository } from 'typeorm';
 import { Player } from 'src/players/entities/player.entity';
 import * as bcrypt from 'bcrypt';
+import deleteImage from 'src/utils/deleteImage';
 
 @Injectable()
 export class UsersService {
-  private readonly logger = new Logger('UserService');
   private readonly CLUBROLEID = 3;
   private readonly ORGANIZERROLERID = 2;
   private readonly ADMINROLERID = 1;
@@ -57,6 +56,8 @@ export class UsersService {
     const userExists: User = await this.userRepository.findOneBy({ id });
     if (!userExists)
       throw new NotFoundException(`User with ID ${id} not found`);
+    if (updateUserDto.password)
+      updateUserDto.password = bcrypt.hashSync(updateUserDto.password, 10);
     const userToUpdate = {
       id,
       ...updateUserDto,
@@ -65,6 +66,7 @@ export class UsersService {
     const user = await this.userRepository.preload(userToUpdate);
     const returnUser = await this.userRepository.save(user);
     delete returnUser.password;
+    if (image && userExists.image) deleteImage(userExists.image);
     return returnUser;
   }
 
