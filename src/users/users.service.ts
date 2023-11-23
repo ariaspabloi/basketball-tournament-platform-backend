@@ -11,6 +11,7 @@ import { User } from './entities/user.entity';
 import { Role } from './entities/role.entity';
 import { Repository } from 'typeorm';
 import { Player } from 'src/players/entities/player.entity';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UsersService {
@@ -29,6 +30,7 @@ export class UsersService {
   private async create(userDetails, role, image = undefined) {
     const user = await this.userRepository.create({
       ...userDetails,
+      password: bcrypt.hashSync(userDetails.password, 10),
       ...(image ? { image } : {}),
       role,
     });

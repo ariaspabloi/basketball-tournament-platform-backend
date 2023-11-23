@@ -86,10 +86,19 @@ export class PlayerStatisticsService {
     const startDate = new Date();
     startDate.setDate(startDate.getDate() - period);
 
+    console.log('playerStatistics');
     // Fetching player statistics
     const playerStatistics = await this.playerStatisticsRepository
       .createQueryBuilder('playerStatistics')
       .leftJoinAndSelect('playerStatistics.match', 'match')
+      .leftJoin('match.home', 'home')
+      .addSelect('home')
+      .leftJoin('home.club', 'homeClub')
+      .addSelect('homeClub.name')
+      .leftJoin('match.away', 'awayClub')
+      .addSelect('awayClub')
+      .leftJoin('awayClub.club', 'club')
+      .addSelect('club.name')
       .leftJoinAndSelect('playerStatistics.player', 'player')
       .where('player.teamId = :teamId', { teamId })
       .andWhere('match.dateTime >= :startDate', { startDate })
@@ -108,6 +117,13 @@ export class PlayerStatisticsService {
       return acc;
     }, {});
     // Converting the object back to an array
+    console.log(
+      JSON.stringify(
+        Object.values(playersWithStatistics)[0]['statistics'],
+        null,
+        4,
+      ),
+    );
     return Object.values(playersWithStatistics);
   }
 
@@ -124,23 +140,34 @@ export class PlayerStatisticsService {
     playersWithStatistics.forEach((player) => {
       const sheet = workbook.addWorksheet(player.name);
 
-      // Define columns for the sheet
-      sheet.columns = [
-        { header: 'Fecha', key: 'matchDate', width: 20 },
-        { header: 'Valoración', key: 'valoracion', width: 14 },
-        { header: 'Puntos Totales', key: 'totalPoints', width: 14 },
-        { header: 'Puntos', key: 'points', width: 10 },
-        { header: 'Dobles', key: 'doubleDoubles', width: 15 },
-        { header: 'Triples', key: 'threePointers', width: 15 },
-        { header: 'Faltas', key: 'fouls', width: 10 },
-        { header: 'Robos', key: 'turnovers', width: 12 },
-        { header: 'Rebotes Ofensivos', key: 'offensiveRebounds', width: 18 },
-        { header: 'Rebotes Defensivos', key: 'defensiveRebounds', width: 18 },
-        { header: 'Asistencias', key: 'assists', width: 10 },
-        { header: 'Perdidas', key: 'losses', width: 10 },
-      ];
+      // Add title row with large text
+      const titleRow = sheet.addRow(['Estadísticas de ' + player.name]);
+      titleRow.font = { size: 16, bold: true };
+      // Merge cells for title row
+      sheet.mergeCells('A1:L1');
 
-      // Add rows to the sheet
+      // Add a blank row
+      sheet.addRow([]);
+
+      // Add header row
+      sheet.addRow([
+        'Fecha',
+        'Valoración',
+        'Local',
+        'Visita',
+        'Puntos Totales',
+        'Puntos',
+        'Dobles',
+        'Triples',
+        'Faltas',
+        'Robos',
+        'Rebotes Ofensivos',
+        'Rebotes Defensivos',
+        'Asistencias',
+        'Perdidas',
+      ]);
+
+      // Add data rows
       player.statistics.forEach((stat) => {
         const totalPoints =
           stat.points + stat.doubleDoubles * 2 + stat.threePointers * 3;
@@ -152,20 +179,22 @@ export class PlayerStatisticsService {
           stat.defensiveRebounds -
           stat.losses;
 
-        sheet.addRow({
-          matchDate: stat.match.dateTime.toISOString().split('T')[0],
-          fouls: stat.fouls,
-          points: stat.points,
-          doubleDoubles: stat.doubleDoubles,
-          threePointers: stat.threePointers,
-          turnovers: stat.turnovers,
-          offensiveRebounds: stat.offensiveRebounds,
-          defensiveRebounds: stat.defensiveRebounds,
-          assists: stat.assists,
-          losses: stat.losses,
-          totalPoints: totalPoints,
-          valoracion: valoracion,
-        });
+        sheet.addRow([
+          stat.match.dateTime.toISOString().split('T')[0], // Fecha
+          valoracion, // Valoración
+          stat.match.home.club.name, // Local
+          stat.match.away.club.name, // Visita
+          totalPoints, // Puntos Totales
+          stat.points, // Puntos
+          stat.doubleDoubles, // Dobles
+          stat.threePointers, // Triples
+          stat.fouls, // Faltas
+          stat.turnovers, // Robos
+          stat.offensiveRebounds, // Rebotes Ofensivos
+          stat.defensiveRebounds, // Rebotes Defensivos
+          stat.assists, // Asistencias
+          stat.losses, // Perdidas
+        ]);
       });
     });
 
