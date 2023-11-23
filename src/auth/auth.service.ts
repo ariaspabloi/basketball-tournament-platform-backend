@@ -11,7 +11,7 @@ export class AuthService {
   ) {}
 
   async signIn(email: string, pass: string): Promise<any> {
-    const user = await this.usersService.findOneByEmail(email);
+    const user = await this.usersService.findOneByEmailWithPassword(email);
     if (!bcrypt.compareSync(pass, user?.password)) {
       throw new UnauthorizedException('Clave incorrecta');
     }

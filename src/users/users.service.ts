@@ -144,6 +144,18 @@ export class UsersService {
     return user;
   }
 
+  async findOneByEmailWithPassword(email: string): Promise<User> {
+    const user = await this.userRepository
+      .createQueryBuilder('user')
+      .addSelect('user.password') // Explicitly select the password field
+      .where('user.email = :email', { email })
+      .getOne();
+
+    if (!user) {
+      throw new NotFoundException(`User con ${email} no encontrado`);
+    }
+    return user;
+  }
   async createClub(createUserDto: CreateUserDto, image: string) {
     const role = await this.roleRepository.findOneBy({ id: this.CLUBROLEID });
     if (!role) throw new InternalServerErrorException('Rol no encontrado');
