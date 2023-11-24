@@ -109,31 +109,6 @@ export class ClubsController {
     );
   }
 
-  @Post('image')
-  @Roles(Role.Club)
-  @UseInterceptors(
-    FileInterceptor('file', {
-      storage: diskStorage({
-        destination: './files/images',
-        filename: filenameGenerator,
-      }),
-    }),
-  )
-  handleUpload(
-    @UploadedFile(
-      new ParseFilePipeBuilder()
-        .addFileTypeValidator({
-          fileType: /jpg|jpeg|png|gif/,
-        })
-        .build(),
-    )
-    file: Express.Multer.File,
-    @Req() req: any,
-  ) {
-    console.log(req.user.sub);
-    return this.usersService.updateImage(req.user.sub, file.filename);
-  }
-
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.usersService.findClub(+id);

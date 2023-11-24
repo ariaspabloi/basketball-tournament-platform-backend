@@ -96,13 +96,6 @@ export class UsersService {
     return count;
   }
 
-  async updateImage(id, image) {
-    //TODO: delete old image
-    const user = await this.userRepository.preload({ id, image });
-    await this.userRepository.save(user);
-    return user;
-  }
-
   async updateProfileClub(
     id: number,
     image: string,
@@ -148,6 +141,7 @@ export class UsersService {
     const user = await this.userRepository
       .createQueryBuilder('user')
       .addSelect('user.password') // Explicitly select the password field
+      .leftJoinAndSelect('user.role', 'role')
       .where('user.email = :email', { email })
       .getOne();
 
