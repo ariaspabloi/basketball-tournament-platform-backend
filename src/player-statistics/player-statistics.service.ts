@@ -156,7 +156,7 @@ export class PlayerStatisticsService {
         'Local',
         'Visita',
         'Puntos Totales',
-        'Puntos',
+        'Tiros libres',
         'Dobles',
         'Triples',
         'Faltas',
@@ -170,7 +170,7 @@ export class PlayerStatisticsService {
       // Add data rows
       player.statistics.forEach((stat) => {
         const totalPoints =
-          stat.points + stat.doubleDoubles * 2 + stat.threePointers * 3;
+          stat.freeThrows + stat.doubleDoubles * 2 + stat.threePointers * 3;
         const valoracion =
           totalPoints +
           stat.turnovers +
@@ -185,7 +185,7 @@ export class PlayerStatisticsService {
           stat.match.home.club.name, // Local
           stat.match.away.club.name, // Visita
           totalPoints, // Puntos Totales
-          stat.points, // Puntos
+          stat.freeThrows, // Puntos
           stat.doubleDoubles, // Dobles
           stat.threePointers, // Triples
           stat.fouls, // Faltas

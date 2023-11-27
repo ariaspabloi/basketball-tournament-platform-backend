@@ -6,7 +6,7 @@ import { TeamLeagueStatisticsService } from 'src/team-league-statistics/team-lea
 import transformArrays from 'src/utils/tranformMatchInfo';
 interface PlayerInfo {
   id: number;
-  points: number;
+  freeThrows: number;
   doubleDoubles: number;
   threePointers: number;
   fouls: number;
@@ -63,7 +63,7 @@ export class BoardService {
             player.id,
             matchId,
             {
-              points: player.points,
+              freeThrows: player.freeThrows,
               doubleDoubles: player.doubleDoubles,
               threePointers: player.threePointers,
               fouls: player.fouls,

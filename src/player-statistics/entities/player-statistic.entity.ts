@@ -11,7 +11,7 @@ export class PlayerStatistic {
   fouls: number;
 
   @Column('int', { default: 0 })
-  points: number;
+  freeThrows: number;
 
   @Column('int', { default: 0 })
   doubleDoubles: number;

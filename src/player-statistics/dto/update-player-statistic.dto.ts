@@ -3,7 +3,7 @@ import { IsInt, IsOptional } from 'class-validator';
 export class UpdatePlayerStatisticDto {
   @IsOptional()
   @IsInt()
-  points?: number;
+  freeThrows?: number;
 
   @IsOptional()
   @IsInt()
