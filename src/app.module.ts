@@ -23,7 +23,7 @@ import { FilesModule } from './files/files.module';
       load: [config],
     }),
     TypeOrmModule.forRoot({
-      type: 'postgres',
+      type: 'mariadb',
       host: process.env.DB_HOST,
       port: +process.env.DB_PORT,
       database: process.env.DB_NAME,
@@ -31,9 +31,7 @@ import { FilesModule } from './files/files.module';
       password: process.env.DB_PASSWORD,
       autoLoadEntities: true,
       synchronize: true,
-      ssl: {
-        rejectUnauthorized: false,
-      },
+      ssl: false,
     }),
     UsersModule,
     TeamsModule,
