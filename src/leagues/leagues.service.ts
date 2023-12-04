@@ -96,13 +96,14 @@ export class LeaguesService {
       .createQueryBuilder('league')
       .where('league.organizerId = :id', { id })
       .getCount();
-    const matchesCount = (
-      await this.leagueRepository
-        .createQueryBuilder('league')
-        .where('league.organizerId = :id', { id })
-        .leftJoinAndSelect('league.matches', 'matches')
-        .getOne()
-    ).matches.length;
+    const matchesCount =
+      (
+        await this.leagueRepository
+          .createQueryBuilder('league')
+          .where('league.organizerId = :id', { id })
+          .leftJoinAndSelect('league.matches', 'matches')
+          .getOne()
+      )?.matches.length || 0;
     return { leagueCount, matchesCount };
   }
 

@@ -15,7 +15,6 @@ export class AuthService {
     if (!bcrypt.compareSync(pass, user?.password)) {
       throw new UnauthorizedException('Clave incorrecta');
     }
-    console.log(user);
     //TODO: return role? role_ID?
     const payload = {
       sub: user.id,
@@ -29,6 +28,7 @@ export class AuthService {
       role: user.role.role_name,
       name: user.name,
       email: user.email,
+      phone: user.phone,
       image: user.image,
     };
   }

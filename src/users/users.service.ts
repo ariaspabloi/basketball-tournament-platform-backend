@@ -34,7 +34,9 @@ export class UsersService {
       role,
     });
     await this.userRepository.save(user);
-    return user;
+    const savedUser = { ...user, password: '' };
+    delete savedUser.password;
+    return savedUser;
   }
 
   private async findAllByRole(roleId: number) {

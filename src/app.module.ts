@@ -45,6 +45,12 @@ import { FilesModule } from './files/files.module';
     BoardModule,
     FilesModule,
   ],
+  //  ssl: false,
+  /*
+        ssl: {
+        rejectUnauthorized: false,
+      },
+   */
   controllers: [],
   providers: [
     {

@@ -55,7 +55,7 @@ export class TeamsService {
       .where('team.clubId = :clubId', { clubId })
       .leftJoinAndSelect('team.division', 'division')
       .leftJoinAndSelect('team.players', 'player')
-      .leftJoin('player.playersStatistics', 'playerStatistic')
+      .leftJoinAndSelect('player.playersStatistics', 'playerStatistic')
       .leftJoin('playerStatistic.match', 'match')
       .leftJoin('match.home', 'homeTeam')
       .leftJoin('homeTeam.club', 'homeClub')
@@ -64,9 +64,11 @@ export class TeamsService {
       .addSelect([
         'team.id',
         'team.coach',
+        'player.id',
+        'player.name',
         'playerStatistic.id',
         'playerStatistic.fouls',
-        'playerStatistic.points',
+        'playerStatistic.freeThrows',
         'playerStatistic.doubleDoubles',
         'playerStatistic.threePointers',
         'playerStatistic.turnovers',
