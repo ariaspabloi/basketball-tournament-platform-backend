@@ -2,6 +2,13 @@
 
 ## Setup
 
+### Install dependencies
+
+```
+npm i
+```
+
+### Set environment values
 Rename the file .env.template to .env in the root of the project.
 
 Fill the values:
@@ -17,6 +24,19 @@ DB_PASSWORD=
 ```
 
 The database expected is MariaDB.
+
+### Build production project and run
+
+```
+npm run build
+npm run start
+```
+
+### Run in development environment
+
+```
+npm run dev
+```
 
 ### Shield: [![CC BY-NC-SA 4.0][cc-by-nc-sa-shield]][cc-by-nc-sa]
 

@@ -45,8 +45,9 @@ import { FilesModule } from './files/files.module';
     BoardModule,
     FilesModule,
   ],
-  //  ssl: false,
+  //mariadb ssl: false,
   /*
+  postgres
         ssl: {
         rejectUnauthorized: false,
       },
