@@ -1,12 +1,12 @@
 import {
-  WebSocketGateway,
-  SubscribeMessage,
-  OnGatewayDisconnect,
   OnGatewayConnection,
+  OnGatewayDisconnect,
+  SubscribeMessage,
+  WebSocketGateway,
   WebSocketServer,
 } from '@nestjs/websockets';
-import { BoardService } from './board.service';
 import { Server, Socket } from 'socket.io';
+import { BoardService } from './board.service';
 
 @WebSocketGateway({ cors: true })
 export class BoardGateway implements OnGatewayConnection, OnGatewayDisconnect {

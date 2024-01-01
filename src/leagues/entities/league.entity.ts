@@ -17,7 +17,7 @@ export class League {
   @Column('text')
   name: string;
 
-  @Column('text')
+  @Column('text', { nullable: true })
   rules?: string;
 
   @Column('date')

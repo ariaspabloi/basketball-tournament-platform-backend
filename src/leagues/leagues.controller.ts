@@ -7,20 +7,46 @@ import {
   Param,
   Delete,
   Req,
+  UseInterceptors,
+  ParseFilePipeBuilder,
+  UploadedFile,
 } from '@nestjs/common';
 import { LeaguesService } from './leagues.service';
 import { CreateLeagueDto } from './dto/create-league.dto';
 import { UpdateLeagueDto } from './dto/update-league.dto';
 import { Roles } from 'src/auth/roles/roles.decorator';
 import { Role } from 'src/auth/roles/role.enum';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { diskStorage } from 'multer';
+import filenameGenerator from 'src/utils/fileNameGenerator';
 
 @Controller('leagues')
 export class LeaguesController {
   constructor(private readonly leaguesService: LeaguesService) {}
 
+  @UseInterceptors(
+    FileInterceptor('file', {
+      storage: diskStorage({
+        destination: './files/documents',
+        filename: filenameGenerator,
+      }),
+    }),
+  )
   @Post()
-  create(@Body() createLeagueDto: CreateLeagueDto) {
-    return this.leaguesService.create(createLeagueDto);
+  create(
+    @UploadedFile(
+      new ParseFilePipeBuilder()
+        .addFileTypeValidator({
+          fileType: /pdf/,
+        })
+        .build({
+          fileIsRequired: false,
+        }),
+    )
+    file: Express.Multer.File,
+    @Body() createLeagueDto: CreateLeagueDto,
+  ) {
+    return this.leaguesService.create(createLeagueDto, file?.filename);
   }
 
   @Get()
@@ -48,8 +74,34 @@ export class LeaguesController {
 
   @Post('organizer')
   @Roles(Role.Organizer)
-  createByOrganizer(@Req() req: any, @Body() createLeagueDto: CreateLeagueDto) {
-    return this.leaguesService.createByOrganizer(req.user.sub, createLeagueDto);
+  @UseInterceptors(
+    FileInterceptor('file', {
+      storage: diskStorage({
+        destination: './files/documents',
+        filename: filenameGenerator,
+      }),
+    }),
+  )
+  @Post()
+  createByOrganizer(
+    @Req() req: any,
+    @UploadedFile(
+      new ParseFilePipeBuilder()
+        .addFileTypeValidator({
+          fileType: /pdf/,
+        })
+        .build({
+          fileIsRequired: false,
+        }),
+    )
+    file: Express.Multer.File,
+    @Body() createLeagueDto: CreateLeagueDto,
+  ) {
+    return this.leaguesService.createByOrganizer(
+      req.user.sub,
+      createLeagueDto,
+      file?.filename,
+    );
   }
 
   @Get(':id/clubs')

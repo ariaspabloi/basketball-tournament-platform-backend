@@ -14,4 +14,12 @@ export class FilesController {
     );
     return new StreamableFile(file);
   }
+
+  @Get('documents/:filename')
+  getDocument(@Param('filename') filename: string): StreamableFile {
+    const file = createReadStream(
+      join(process.cwd(), `./files/documents/${filename}`),
+    );
+    return new StreamableFile(file);
+  }
 }

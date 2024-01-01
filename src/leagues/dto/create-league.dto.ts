@@ -1,13 +1,10 @@
-import { IsInt, IsOptional, IsString, MinLength } from 'class-validator';
+import { Transform } from 'class-transformer';
+import { IsInt, IsOptional, MinLength } from 'class-validator';
 import { IsOnlyDate } from 'src/utils/date.validator';
 
 export class CreateLeagueDto {
   @MinLength(4)
   name: string;
-
-  @IsOptional()
-  @IsString()
-  rules: string;
 
   @IsOnlyDate()
   startDate: string;
@@ -16,6 +13,7 @@ export class CreateLeagueDto {
   endDate: string;
 
   @IsOptional()
+  @Transform(({ value }) => Number(value))
   @IsInt()
   organizerId: number;
 }

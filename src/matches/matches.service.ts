@@ -1,11 +1,12 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { LeaguesService } from 'src/leagues/leagues.service';
+import { TeamLeagueStatisticsService } from 'src/team-league-statistics/team-league-statistics.service';
+import { TeamsService } from 'src/teams/teams.service';
+import { Repository } from 'typeorm';
 import { CreateMatchDto } from './dto/create-match.dto';
 import { UpdateMatchDto } from './dto/update-match.dto';
-import { InjectRepository } from '@nestjs/typeorm';
 import { Match } from './entities/match.entity';
-import { Repository } from 'typeorm';
-import { TeamsService } from 'src/teams/teams.service';
-import { LeaguesService } from 'src/leagues/leagues.service';
 
 @Injectable()
 export class MatchesService {
@@ -14,6 +15,7 @@ export class MatchesService {
     private readonly matchRepository: Repository<Match>,
     private readonly teamService: TeamsService,
     private readonly leagueService: LeaguesService,
+    private readonly teamLeagueStatisticsService: TeamLeagueStatisticsService,
   ) {}
 
   async create(createMatchDto: CreateMatchDto) {
@@ -83,10 +85,16 @@ export class MatchesService {
       .leftJoin('match.league', 'league')
       .leftJoin('match.away', 'awayTeam')
       .leftJoin('match.home', 'homeTeam')
-      .select(['match.id', 'awayTeam.id', 'homeTeam.id', 'league.id'])
+      .select([
+        'match.id',
+        'awayTeam.id',
+        'homeTeam.id',
+        'league.id',
+        'league.name',
+      ])
       .getOne();
     if (!match)
-      throw new NotFoundException(`Equipo con id ${id} no encontrado.`);
+      throw new NotFoundException(`Partido con id ${id} no encontrado.`);
     return match;
   }
 
@@ -135,13 +143,27 @@ export class MatchesService {
   }
 
   async update(id: number, updateMatchDto: UpdateMatchDto) {
+    const oldMatch = await this.matchRepository.findOne({
+      where: { id },
+      relations: ['league', 'home', 'away'],
+    });
+
     const match = await this.matchRepository.preload({
       id: +id,
       ...updateMatchDto,
     });
     if (!match)
       throw new NotFoundException(`Partido con id ${id} no encontrado.`);
-    return await this.matchRepository.save(match);
+    await this.matchRepository.save(match);
+    const newMatch = await this.matchRepository.findOne({
+      where: { id },
+      relations: ['league', 'home', 'away'],
+    });
+    await this.teamLeagueStatisticsService.updateFromMatches(
+      oldMatch,
+      newMatch,
+    );
+    return newMatch;
   }
 
   async remove(id: number) {

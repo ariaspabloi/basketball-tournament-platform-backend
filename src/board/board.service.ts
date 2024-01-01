@@ -82,7 +82,7 @@ export class BoardService {
         homePoints,
         fullMatchInfo.league.id,
       );
-      return true;
+      return { match, fullMatchInfo };
     } catch (error) {
       console.error(error);
       return false;

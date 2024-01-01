@@ -14,12 +14,13 @@ export class LeaguesService {
     private readonly userSevice: UsersService,
   ) {}
 
-  async create(createLeagueDto: CreateLeagueDto) {
+  async create(createLeagueDto: CreateLeagueDto, rules: string) {
     const { organizerId, ...leagueDetails } = createLeagueDto;
     const organizer = await this.userSevice.findOrganizer(organizerId);
     const league = await this.leagueRepository.create({
       ...leagueDetails,
       organizer,
+      ...(rules ? { rules } : {}),
     });
     await this.leagueRepository.save(league);
     return league;
@@ -28,11 +29,13 @@ export class LeaguesService {
   async createByOrganizer(
     organizerId: number,
     createLeagueDto: CreateLeagueDto,
+    rules,
   ) {
     const organizer = await this.userSevice.findOrganizer(organizerId);
     const league = await this.leagueRepository.create({
       ...createLeagueDto,
       organizer,
+      ...(rules ? { rules } : {}),
     });
     await this.leagueRepository.save(league);
     return league;
@@ -130,17 +133,26 @@ export class LeaguesService {
   }
 
   async update(id: number, updateLeagueDto: UpdateLeagueDto) {
-    //TODO: borrar matches si se cambia las fechas
     const { winnerId, ...updateLeague } = updateLeagueDto;
-    const winner = await this.userSevice.findClub(winnerId);
-    const league = await this.leagueRepository.preload({
-      id,
-      ...updateLeague,
-      winner,
-    });
-    if (!league) throw new NotFoundException(`Liga con ${id} no encontrada.`);
-    await this.leagueRepository.save(league);
-    return league;
+    if (winnerId) {
+      const winner = await this.userSevice.findClub(winnerId);
+      const league = await this.leagueRepository.preload({
+        id,
+        ...updateLeague,
+        winner,
+      });
+      if (!league) throw new NotFoundException(`Liga con ${id} no encontrada.`);
+      await this.leagueRepository.save(league);
+      return league;
+    } else {
+      const league = await this.leagueRepository.preload({
+        id,
+        ...updateLeague,
+      });
+      if (!league) throw new NotFoundException(`Liga con ${id} no encontrada.`);
+      await this.leagueRepository.save(league);
+      return league;
+    }
   }
 
   async remove(id: number) {
